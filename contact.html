@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Contact Us | Vulaegis Industrial Safety</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Contact Us | Vulaegis Industrial Safety</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
@@ -18,6 +18,7 @@
         <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
         <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
+        <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
         <li class="nav-item"><a class="nav-link active" href="contact.html">Contact</a></li>
       </ul>
     </div>
@@ -26,8 +27,8 @@
 
 <header class="bg-warning text-dark py-5">
   <div class="container py-4">
-    <h1 class="display-4">Contact Our Safety Experts</h1>
-    <p class="lead">Get customized solutions for your facility</p>
+    <h1 class="display-4">Contact Vulaegis</h1>
+    <p class="lead">Your Safety Partner in Kenya, Africa, and Worldwide</p>
   </div>
 </header>
 
@@ -38,43 +39,18 @@
         <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
             <h2 class="mb-4">Send us a message</h2>
-              <?php if (isset($_GET['success'])): ?>
-                <div class="alert alert-success">Thank you! Your message has been sent.</div>
-              <?php elseif (isset($_GET['error'])): ?>
-                <div class="alert alert-danger">Sorry, there was a problem sending your message. Please try again.</div>
-               <?php endif; ?>
-
-            <form action="sendmail.php" method="POST">
-          
+            <form action="https://formspree.io/f/yourformid" method="POST">
               <div class="mb-3">
                 <label for="name" class="form-label">Full Name</label>
-                <input type="text" class="form-control" id="name" placeholder="Your Name" required>
+                <input type="text" class="form-control" id="name" name="name" required>
               </div>
               <div class="mb-3">
                 <label for="email" class="form-label">Email Address</label>
-                <input type="email" class="form-control" id="email" placeholder="name@company.com" required>
-              </div>
-              <div class="mb-3">
-                <label for="phone" class="form-label">Phone Number</label>
-                <input type="tel" class="form-control" id="phone" placeholder="(555) 123-4567">
-              </div>
-              <div class="mb-3">
-                <label for="company" class="form-label">Company</label>
-                <input type="text" class="form-control" id="company" placeholder="Your Company">
-              </div>
-              <div class="mb-3">
-                <label for="service" class="form-label">Service Interest</label>
-                <select class="form-select" id="service">
-                  <option selected>Select a service</option>
-                  <option>Safety Consulting</option>
-                  <option>Training Programs</option>
-                  <option>Compliance Audits</option>
-                  <option>Other</option>
-                </select>
+                <input type="email" class="form-control" id="email" name="email" required>
               </div>
               <div class="mb-3">
                 <label for="message" class="form-label">Message</label>
-                <textarea class="form-control" id="message" rows="5" placeholder="Tell us about your safety needs..." required></textarea>
+                <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
               </div>
               <button type="submit" class="btn btn-warning btn-lg w-100">Send Message</button>
             </form>
@@ -83,74 +59,13 @@
       </div>
       <div class="col-lg-6">
         <h2 class="mb-4">Contact Information</h2>
-        <div class="d-flex mb-4">
-          <div class="flex-shrink-0 bg-warning p-3 rounded-circle d-flex align-items-center justify-content-center me-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
-            </svg>
-          </div>
-          <div>
-            <h5>Headquarters</h5>
-            <p class="mb-0">123 Safety Avenue<br>Industrial Park, IP 54321</p>
-          </div>
-        </div>
-        <div class="d-flex mb-4">
-          <div class="flex-shrink-0 bg-warning p-3 rounded-circle d-flex align-items-center justify-content-center me-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383-4.758 2.855L15 11.114v-5.73zm-.034 6.878L9.271 8.82 8 9.583 6.728 8.82l-5.694 3.44A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.739zM1 11.114l4.758-2.876L1 5.383v5.73z"/>
-            </svg>
-          </div>
-          <div>
-            <h5>Email & Phone</h5>
-            <p class="mb-0">vulaegis.safety@gmail.com<br>(555) 123-4567</p>
-          </div>
-        </div>
-        <div class="d-flex mb-4">
-          <div class="flex-shrink-0 bg-warning p-3 rounded-circle d-flex align-items-center justify-content-center me-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M8 0a5 5 0 0 0-5 5v1.5a.5.5 0 0 0-.5.5v5a.5.5 0 0 0 .5.5H3v3a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-3h.5a.5.5 0 0 0 .5-.5V6a.5.5 0 0 0-.5-.5H13V5a5 5 0 0 0-5-5zM4 5a4 4 0 1 1 4.5 3.969V8.5a.5.5 0 0 0-1 0v.469A4 4 0 0 1 4 5zm8 10H4v-3h8v3z"/>
-            </svg>
-          </div>
-          <div>
-            <h5>Business Hours</h5>
-            <p class="mb-0">Monday-Friday: 8am-6pm EST<br>Saturday: 9am-1pm EST</p>
-          </div>
-        </div>
-        <div class="ratio ratio-16x9">
-          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12345.678901234567!2d-74.005941!3d40.712776!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDDCsDQyJzQ2LjAiTiA3NMKwMDAnMjEuMCJX!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="bg-light py-5">
-  <div class="container text-center">
-    <h2 class="mb-4">Regional Safety Offices</h2>
-    <div class="row g-4">
-      <div class="col-md-4">
-        <div class="card h-100 border-0 shadow-sm">
-          <div class="card-body">
-            <h5>Midwest Division</h5>
-            <p>Chicago, IL<br>(312) 555-7890<br>midwest@Vulaegis.example</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card h-100 border-0 shadow-sm">
-          <div class="card-body">
-            <h5>Southern Division</h5>
-            <p>Houston, TX<br>(713) 555-2468<br>south@Vulaegis.example</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card h-100 border-0 shadow-sm">
-          <div class="card-body">
-            <h5>West Coast Division</h5>
-            <p>Los Angeles, CA<br>(213) 555-1357<br>west@Vulaegis.example</p>
-          </div>
-        </div>
+        <ul class="list-unstyled">
+          <li><strong>Email:</strong> vulaegis.safety@gmail.com</li>
+          <li><strong>Kenya HQ:</strong> Nairobi</li>
+          <li><strong>Subbranches:</strong> Nairobi, Eldoret, Mombasa</li>
+          <li><strong>CEO:</strong> Johnson Ruhiu</li>
+        </ul>
+        <h3>Expanding to Africa and Worldwide</h3>
       </div>
     </div>
   </div>
@@ -161,7 +76,7 @@
     <div class="row">
       <div class="col-md-4 mb-3">
         <h5>Vulaegis</h5>
-        <p>Industrial safety consultants specializing in hazard prevention and regulatory compliance.</p>
+        <p>Founded in 2025, Vulaegis is Kenya’s leading safety consultancy, now expanding across Africa and globally.</p>
       </div>
       <div class="col-md-4 mb-3">
         <h5>Quick Links</h5>
@@ -174,10 +89,10 @@
       <div class="col-md-4">
         <h5>Contact</h5>
         <ul class="list-unstyled">
-          <li>123 Safety Avenue</li>
-          <li>Industrial Park, IP 54321</li>
-          <li>contact@Vulaegis.example</li>
-          <li>(555) 123-4567</li>
+          <li>Kenya HQ: Nairobi</li>
+          <li>Subbranches: Nairobi, Eldoret, Mombasa</li>
+          <li>Email: vulaegis.safety@gmail.com</li>
+          <li>CEO: Johnson Ruhiu</li>
         </ul>
       </div>
     </div>
@@ -187,7 +102,6 @@
     </div>
   </div>
 </footer>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
