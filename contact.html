@@ -38,6 +38,12 @@
         <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
             <h2 class="mb-4">Send us a message</h2>
+              <?php if (isset($_GET['success'])): ?>
+                <div class="alert alert-success">Thank you! Your message has been sent.</div>
+              <?php elseif (isset($_GET['error'])): ?>
+                <div class="alert alert-danger">Sorry, there was a problem sending your message. Please try again.</div>
+               <?php endif; ?>
+
             <form action="sendmail.php" method="POST">
           
               <div class="mb-3">
