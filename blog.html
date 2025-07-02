@@ -161,37 +161,84 @@
   </ul>
 </div>
 
-<footer class="bg-dark text-white py-4 mt-5">
+<footer class="bg-dark text-white pt-5 pb-3 mt-5">
   <div class="container">
-    <div class="row">
-      <div class="col-md-4 mb-3">
-        <h5>Vulaegis</h5>
-        <p>Founded in 2025, Vulaegis is Kenya’s leading safety consultancy, now expanding across Africa and globally.</p>
-      </div>
-      <div class="col-md-4 mb-3">
-        <h5>Quick Links</h5>
-        <ul class="list-unstyled">
-          <li><a href="index.html" class="text-white">Home</a></li>
-          <li><a href="services.html" class="text-white">Services</a></li>
-          <li><a href="contact.html" class="text-white">Contact Us</a></li>
-        </ul>
-      </div>
+    <div class="row gy-4 align-items-start">
+      <!-- Company Logo & About -->
       <div class="col-md-4">
-        <h5>Contact</h5>
+        <div class="mb-3">
+          <img src="logo.png" alt="Vulaegis Logo" style="height:48px;">
+        </div>
+        <p>
+          <strong>Vulaegis Safety Ltd.</strong><br>
+          Leading industrial safety consultancy, headquartered in Nairobi and serving Africa and beyond.
+        </p>
+      </div>
+      <!-- Navigation Links -->
+      <div class="col-md-2">
+        <h6 class="text-uppercase fw-bold mb-3">Navigation</h6>
         <ul class="list-unstyled">
-          <li>Kenya HQ: Nairobi</li>
-          <li>Subbranches: Nairobi, Eldoret, Mombasa</li>
-          <li>Email: vulaegis.safety@gmail.com</li>
-          <li>CEO: Johnson Ruhiu</li>
+          <li><a href="about.html" class="text-white text-decoration-none">About</a></li>
+          <li><a href="services.html" class="text-white text-decoration-none">Services</a></li>
+          <li><a href="contact.html" class="text-white text-decoration-none">Contact</a></li>
+          <li><a href="blog.html" class="text-white text-decoration-none">Blog</a></li>
         </ul>
+      </div>
+      <!-- Contact Information -->
+      <div class="col-md-3">
+        <h6 class="text-uppercase fw-bold mb-3">Contact</h6>
+        <ul class="list-unstyled">
+          <li><span class="me-2">📧</span><a href="mailto:vulaegis.safety@gmail.com" class="text-white text-decoration-none">vulaegis.safety@gmail.com</a></li>
+          <li><span class="me-2">📞</span><a href="tel:+254700000000" class="text-white text-decoration-none">+254 700 000 000</a></li>
+          <li><span class="me-2">📍</span>Kenya HQ: Nairobi<br>Subbranches: Nairobi, Eldoret, Mombasa</li>
+        </ul>
+      </div>
+      <!-- Social Media Links -->
+      <div class="col-md-3">
+        <h6 class="text-uppercase fw-bold mb-3">Connect</h6>
+        <a href="https://www.linkedin.com/company/vulaegis" class="text-white me-3" target="_blank" title="LinkedIn">
+          <svg width="24" height="24" fill="currentColor" style="vertical-align:middle;"><use xlink:href="#icon-linkedin"/></svg>
+        </a>
+        <a href="https://twitter.com/vulaegis" class="text-white me-3" target="_blank" title="Twitter">
+          <svg width="24" height="24" fill="currentColor" style="vertical-align:middle;"><use xlink:href="#icon-twitter"/></svg>
+        </a>
+        <a href="https://facebook.com/vulaegis" class="text-white me-3" target="_blank" title="Facebook">
+          <svg width="24" height="24" fill="currentColor" style="vertical-align:middle;"><use xlink:href="#icon-facebook"/></svg>
+        </a>
+        <a href="https://instagram.com/vulaegis" class="text-white" target="_blank" title="Instagram">
+          <svg width="24" height="24" fill="currentColor" style="vertical-align:middle;"><use xlink:href="#icon-instagram"/></svg>
+        </a>
       </div>
     </div>
-    <hr class="bg-light">
-    <div class="text-center">
-      <small>&copy; 2025 Vulaegis. All rights reserved.</small>
+    <hr class="bg-light mt-4 mb-3">
+    <div class="row">
+      <div class="col-md-6 small">
+        &copy; 2025 Vulaegis Safety Ltd. All rights reserved.
+      </div>
+      <div class="col-md-6 text-md-end small">
+        <a href="privacy.html" class="text-white text-decoration-none me-3">Privacy Policy</a>
+        <a href="terms.html" class="text-white text-decoration-none">Terms of Service</a>
+      </div>
     </div>
   </div>
+
+  <!-- SVG ICONS (place once in your HTML, e.g. before </body>) -->
+  <svg style="display:none;">
+    <symbol id="icon-linkedin" viewBox="0 0 24 24">
+      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.268c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.5 10.268h-3v-4.604c0-1.099-.021-2.513-1.531-2.513-1.531 0-1.767 1.197-1.767 2.434v4.683h-3v-9h2.881v1.229h.041c.401-.759 1.379-1.561 2.838-1.561 3.034 0 3.595 1.997 3.595 4.594v4.738z"/>
+    </symbol>
+    <symbol id="icon-twitter" viewBox="0 0 24 24">
+      <path d="M24 4.557a9.83 9.83 0 0 1-2.828.775 4.932 4.932 0 0 0 2.165-2.724c-.951.564-2.005.974-3.127 1.195a4.916 4.916 0 0 0-8.384 4.482c-4.083-.205-7.697-2.159-10.125-5.134a4.822 4.822 0 0 0-.664 2.475c0 1.708.87 3.216 2.188 4.099a4.904 4.904 0 0 1-2.228-.616c-.054 2.281 1.581 4.415 3.949 4.89a4.936 4.936 0 0 1-2.224.084c.627 1.956 2.444 3.377 4.6 3.417a9.868 9.868 0 0 1-6.102 2.104c-.396 0-.788-.023-1.175-.069a13.945 13.945 0 0 0 7.548 2.212c9.057 0 14.009-7.513 14.009-14.009 0-.213-.005-.425-.014-.636a10.025 10.025 0 0 0 2.46-2.548l-.047-.02z"/>
+    </symbol>
+    <symbol id="icon-facebook" viewBox="0 0 24 24">
+      <path d="M22.675 0h-21.35c-.733 0-1.325.592-1.325 1.325v21.351c0 .732.592 1.324 1.325 1.324h11.495v-9.294h-3.124v-3.622h3.124v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.797.143v3.24l-1.919.001c-1.504 0-1.797.715-1.797 1.763v2.312h3.587l-.467 3.622h-3.12v9.294h6.116c.73 0 1.322-.592 1.322-1.324v-21.35c0-.733-.592-1.325-1.325-1.325z"/>
+    </symbol>
+    <symbol id="icon-instagram" viewBox="0 0 24 24">
+      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.309.974.974 1.247 2.242 1.309 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.334 2.633-1.309 3.608-.974.974-2.242 1.247-3.608 1.309-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.334-3.608-1.309-.974-.974-1.247-2.242-1.309-3.608-.058-1.266-.07-1.646-.07-4.85s.012-3.584.07-4.85c.062-1.366.334-2.633 1.309-3.608.974-.974 2.242-1.247 3.608-1.309 1.266-.058 1.646-.07 4.85-.07zm0-2.163c-3.259 0-3.667.012-4.947.072-1.276.059-2.675.334-3.637 1.297-.962.962-1.238 2.361-1.297 3.637-.06 1.28-.072 1.688-.072 4.947s.012 3.667.072 4.947c.059 1.276.334 2.675 1.297 3.637.962.962 2.361 1.238 3.637 1.297 1.28.06 1.688.072 4.947.072s3.667-.012 4.947-.072c1.276-.059 2.675-.334 3.637-1.297.962-.962 1.238-2.361 1.297-3.637.06-1.28.072-1.688.072-4.947s-.012-3.667-.072-4.947c-.059-1.276-.334-2.675-1.297-3.637-.962-.962-2.361-1.238-3.637-1.297-1.28-.06-1.688-.072-4.947-.072zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zm0 10.162a3.999 3.999 0 1 1 0-7.998 3.999 3.999 0 0 1 0 7.998zm6.406-11.845a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/>
+    </symbol>
+  </svg>
 </footer>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
