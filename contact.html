@@ -1,37 +1,136 @@
-<form action="form_submit.php" method="post">
-  <div class="form-group">
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" required>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact Us - Vulaegis Safety</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto 30px auto;
+      max-width: 200px;
+      height: auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: bold;
+      color: #004080;
+    }
+    form {
+      background: #f9f9f9;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 18px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+      box-sizing: border-box;
+      resize: vertical;
+    }
+    textarea {
+      min-height: 100px;
+    }
+    button {
+      background-color: #004080;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #003060;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Company Logo -->
+    <img src="https://github.com/VulaegisSafety/Vulaegis/blob/main/assets/images/logo1.png?raw=true" alt="Vulaegis Logo" class="logo" />
+
+    <h1>Contact Us</h1>
+
+    <form action="form_submit.php" method="post">
+      <label for="name">Full Name *</label>
+      <input type="text" id="name" name="name" required placeholder="Your full name" />
+
+      <label for="email">Email Address *</label>
+      <input type="email" id="email" name="email" required placeholder="Your email address" />
+
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" name="phone" placeholder="Optional" />
+
+      <label for="inquiry-type">Inquiry Type *</label>
+      <select id="inquiry-type" name="inquiry_type" required>
+        <option value="" disabled selected>-- Please select --</option>
+        <option value="service_request">Request a Service Quote</option>
+        <option value="general_inquiry">General Inquiry</option>
+      </select>
+
+      <label for="service" id="service-label" style="display:none;">Select a Service</label>
+      <select id="service" name="service" style="display:none;">
+        <option value="" disabled selected>-- Select a Service --</option>
+        <option value="accident_forensics">Accident Forensics (Root Cause Analysis)</option>
+        <option value="ppe">PPE</option>
+        <option value="machinery">Machinery</option>
+        <option value="emergency_preparedness">Emergency Preparedness</option>
+        <option value="ergonomics">Ergonomics</option>
+        <option value="housekeeping">Housekeeping</option>
+        <option value="hazardous_materials">Hazardous Materials</option>
+      </select>
+
+      <label for="message">Additional Details</label>
+      <textarea id="message" name="message" placeholder="Please provide any additional information or questions"></textarea>
+
+      <button type="submit">Send Message</button>
+    </form>
   </div>
 
-  <div class="form-group">
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
-  </div>
+  <script>
+    // Show/hide service dropdown based on inquiry type
+    const inquiryType = document.getElementById('inquiry-type');
+    const serviceSelect = document.getElementById('service');
+    const serviceLabel = document.getElementById('service-label');
 
-  <div class="form-group">
-    <label for="phone">Phone Number:</label>
-    <input type="tel" id="phone" name="phone">
-  </div>
-
-  <div class="form-group">
-    <label for="service">Select a Service:</label>
-    <select id="service" name="service" required>
-      <option value="" disabled selected>-- Choose a Service --</option>
-      <option value="accident_forensics">Accident Forensics (Root Cause Analysis)</option>
-      <option value="ppe">PPE</option>
-      <option value="machinery">Machinery</option>
-      <option value="emergency_preparedness">Emergency Preparedness</option>
-      <option value="ergonomics">Ergonomics</option>
-      <option value="housekeeping">Housekeeping</option>
-      <option value="hazardous_materials">Hazardous Materials</option>
-    </select>
-  </div>
-
-  <div class="form-group">
-    <label for="message">Additional Details:</label>
-    <textarea id="message" name="message" placeholder="Provide any specific requirements or questions"></textarea>
-  </div>
-
-  <button type="submit">Request a Quote</button>
-</form>
+    inquiryType.addEventListener('change', () => {
+      if (inquiryType.value === 'service_request') {
+        serviceSelect.style.display = 'block';
+        serviceLabel.style.display = 'block';
+        serviceSelect.setAttribute('required', 'required');
+      } else {
+        serviceSelect.style.display = 'none';
+        serviceLabel.style.display = 'none';
+        serviceSelect.removeAttribute('required');
+      }
+    });
+  </script>
+</body>
+</html>
