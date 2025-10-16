@@ -1,257 +1,167 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Case Studies | Vulaegis</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .status-badge {
-      font-size: 0.8rem;
-      padding: 0.35rem 0.75rem;
-    }
-    .card {
-      transition: transform 0.3s ease;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-    }
-    .nav-tabs .nav-link.active {
-      font-weight: 600;
-    }
-  </style>
-</head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-  <div class="container">
-    <a class="navbar-brand" href="index.html">Vulaegis</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
-        <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
-        <li class="nav-item"><a class="nav-link active" href="case-studies.html">Case Studies</a></li>
-        <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
-        <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-<header class="bg-primary text-white text-center py-5">
-  <div class="container py-4">
-    <h1 class="display-4 fw-bold">Case Studies</h1>
-    <p class="lead">Explore our safety solutions and their impact across various industries</p>
-  </div>
-</header>
-
-<section class="py-5">
-  <div class="container">
-    <div class="row mb-4">
-      <div class="col-12">
-        <ul class="nav nav-tabs justify-content-center" id="caseStudyTabs" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="ongoing-tab" data-bs-toggle="tab" data-bs-target="#ongoing" type="button" role="tab" aria-controls="ongoing" aria-selected="true">Ongoing Projects</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="review-tab" data-bs-toggle="tab" data-bs-target="#review" type="button" role="tab" aria-controls="review" aria-selected="false">Under Review</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="completed-tab" data-bs-toggle="tab" data-bs-target="#completed" type="button" role="tab" aria-controls="completed" aria-selected="false">Completed</button>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="tab-content" id="caseStudyTabsContent">
-      <!-- Ongoing Projects Tab -->
-      <div class="tab-pane fade show active" id="ongoing" role="tabpanel" aria-labelledby="ongoing-tab">
-        <div class="row g-4">
-          <div class="col-md-6 col-lg-4">
-            <div class="card h-100 border-0 shadow">
-              <div class="card-body">
-                <span class="badge bg-warning text-dark status-badge mb-2">Ongoing</span>
-                <h5 class="card-title">Industrial Fire Safety Implementation at Nairobi Manufacturing Plant</h5>
-                <p class="card-text">Comprehensive fire safety assessment and implementation plan for a large manufacturing facility in Nairobi's industrial area. The project includes NFPA compliance audits, employee training, and installation of modern fire suppression systems.</p>
-                <a href="https://drive.google.com/file/d/your-file-id-1/view" class="btn btn-primary btn-sm" target="_blank">View Full Report</a>
-              </div>
-            </div>
-          </div>
-          
-          <div class="col-md-6 col-lg-4">
-            <div class="card h-100 border-0 shadow">
-              <div class="card-body">
-                <span class="badge bg-warning text-dark status-badge mb-2">Ongoing</span>
-                <h5 class="card-title">Chemical Safety Protocol Development for Mombasa Port</h5>
-                <p class="card-text">Development of specialized chemical handling and storage protocols for hazardous materials at Mombasa Port. This project involves risk assessment, emergency response planning, and specialized training for port personnel.</p>
-                <a href="https://drive.google.com/file/d/your-file-id-2/view" class="btn btn-primary btn-sm" target="_blank">View Full Report</a>
-              </div>
-            </div>
-          </div>
-          
-          <div class="col-md-6 col-lg-4">
-            <div class="card h-100 border-0 shadow">
-              <div class="card-body">
-                <span class="badge bg-warning text-dark status-badge mb-2">Ongoing</span>
-                <h5 class="card-title">Construction Site Safety Enhancement in Eldoret</h5>
-                <p class="card-text">Implementation of comprehensive safety protocols for a major construction project in Eldoret. Focus areas include fall protection, equipment safety, and site-specific hazard identification for high-rise construction.</p>
-                <a href="https://drive.google.com/file/d/your-file-id-3/view" class="btn btn-primary btn-sm" target="_blank">View Full Report</a>
-              </div>
-            </div>
-          </div>
+<!-- Replace the entire tab content section with this -->
+<div class="tab-content" id="caseStudyTabsContent">
+  <!-- Ongoing Projects Tab -->
+  <div class="tab-pane fade show active" id="ongoing" role="tabpanel" aria-labelledby="ongoing-tab">
+    <div class="row g-4" id="ongoing-studies">
+      <div class="col-12 text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
         </div>
-      </div>
-      
-      <!-- Under Review Tab -->
-      <div class="tab-pane fade" id="review" role="tabpanel" aria-labelledby="review-tab">
-        <div class="row g-4">
-          <div class="col-md-6 col-lg-4">
-            <div class="card h-100 border-0 shadow">
-              <div class="card-body">
-                <span class="badge bg-info status-badge mb-2">Under Review</span>
-                <h5 class="card-title">OSHA Compliance Assessment for Textile Industry in Kisumu</h5>
-                <p class="card-text">Detailed assessment of OSHA compliance across multiple textile manufacturing facilities in Kisumu. The study identifies gaps in safety protocols and provides recommendations for improvement to meet international standards.</p>
-                <a href="https://drive.google.com/file/d/your-file-id-4/view" class="btn btn-primary btn-sm" target="_blank">View Full Report</a>
-              </div>
-            </div>
-          </div>
-          
-          <div class="col-md-6 col-lg-4">
-            <div class="card h-100 border-0 shadow">
-              <div class="card-body">
-                <span class="badge bg-info status-badge mb-2">Under Review</span>
-                <h5 class="card-title">Workplace Ergonomics Study for Office Environments</h5>
-                <p class="card-text">Comprehensive ergonomic assessment of office workspaces to reduce musculoskeletal disorders. The study evaluates workstation design, employee posture, and provides recommendations for ergonomic improvements.</p>
-                <a href="https://drive.google.com/file/d/your-file-id-5/view" class="btn btn-primary btn-sm" target="_blank">View Full Report</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Completed Tab -->
-      <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completed-tab">
-        <div class="row g-4">
-          <div class="col-md-6 col-lg-4">
-            <div class="card h-100 border-0 shadow">
-              <div class="card-body">
-                <span class="badge bg-success status-badge mb-2">Completed</span>
-                <h5 class="card-title">Safety Culture Transformation at Nakuru Food Processing Plant</h5>
-                <p class="card-text">A comprehensive safety culture transformation project that reduced workplace incidents by 65% over 12 months. The initiative included leadership training, employee engagement programs, and process safety management implementation.</p>
-                <a href="https://drive.google.com/file/d/your-file-id-6/view" class="btn btn-primary btn-sm" target="_blank">View Full Report</a>
-              </div>
-            </div>
-          </div>
-          
-          <div class="col-md-6 col-lg-4">
-            <div class="card h-100 border-0 shadow">
-              <div class="card-body">
-                <span class="badge bg-success status-badge mb-2">Completed</span>
-                <h5 class="card-title">Emergency Response Planning for Nairobi High-Rise Buildings</h5>
-                <p class="card-text">Development and implementation of emergency response plans for five high-rise commercial buildings in Nairobi's CBD. The project included evacuation procedures, emergency equipment placement, and staff training.</p>
-                <a href="https://drive.google.com/file/d/your-file-id-7/view" class="btn btn-primary btn-sm" target="_blank">View Full Report</a>
-              </div>
-            </div>
-          </div>
-          
-          <div class="col-md-6 col-lg-4">
-            <div class="card h-100 border-0 shadow">
-              <div class="card-body">
-                <span class="badge bg-success status-badge mb-2">Completed</span>
-                <h5 class="card-title">Machine Guarding Safety Implementation in Thika Industrial Area</h5>
-                <p class="card-text">Assessment and implementation of machine guarding solutions across multiple manufacturing facilities in Thika. The project resulted in zero machine-related injuries in the first year post-implementation.</p>
-                <a href="https://drive.google.com/file/d/your-file-id-8/view" class="btn btn-primary btn-sm" target="_blank">View Full Report</a>
-              </div>
-            </div>
-          </div>
-        </div>
+        <p class="mt-2">Loading case studies...</p>
       </div>
     </div>
   </div>
-</section>
-
-<footer class="bg-dark text-white pt-5 pb-3 mt-5">
-  <div class="container">
-    <div class="row gy-4 align-items-start">
-      <!-- Company Logo & About -->
-      <div class="col-md-4">
-        <div class="mb-3">
-          <img src="logo.png" alt="Vulaegis Logo" style="height:48px;">
+  
+  <!-- Under Review Tab -->
+  <div class="tab-pane fade" id="review" role="tabpanel" aria-labelledby="review-tab">
+    <div class="row g-4" id="review-studies">
+      <div class="col-12 text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
         </div>
-        <p>
-          <strong>Vulaegis Safety Ltd.</strong><br>
-          Leading industrial safety consultancy, headquartered in Nairobi and serving Africa and beyond.
-        </p>
-      </div>
-      <!-- Navigation Links -->
-      <div class="col-md-2">
-        <h6 class="text-uppercase fw-bold mb-3">Navigation</h6>
-        <ul class="list-unstyled">
-          <li><a href="about.html" class="text-white text-decoration-none">About</a></li>
-          <li><a href="services.html" class="text-white text-decoration-none">Services</a></li>
-          <li><a href="case-studies.html" class="text-white text-decoration-none">Case Studies</a></li>
-          <li><a href="contact.html" class="text-white text-decoration-none">Contact</a></li>
-          <li><a href="blog.html" class="text-white text-decoration-none">Blog</a></li>
-        </ul>
-      </div>
-      <!-- Contact Information -->
-      <div class="col-md-3">
-        <h6 class="text-uppercase fw-bold mb-3">Contact</h6>
-        <ul class="list-unstyled">
-          <li><span class="me-2">📧</span><a href="mailto:vulaegis.safety@gmail.com" class="text-white text-decoration-none">vulaegis.safety@gmail.com</a></li>
-          <li><span class="me-2">📞</span><a href="tel:+254742727217" class="text-white text-decoration-none">+254 742 727 217</a></li>
-          <li><span class="me-2">📍</span>Kenya HQ: Nairobi<br>Subbranches: Nairobi, Eldoret, Mombasa</li>
-        </ul>
-      </div>
-      <!-- Social Media Links -->
-      <div class="col-md-3">
-        <h6 class="text-uppercase fw-bold mb-3">Connect</h6>
-        <a href="https://www.linkedin.com/company/vulaegis" class="text-white me-3" target="_blank" title="LinkedIn">
-          <svg width="24" height="24" fill="currentColor" style="vertical-align:middle;"><use xlink:href="#icon-linkedin"/></svg>
-        </a>
-        <a href="https://twitter.com/vulaegis" class="text-white me-3" target="_blank" title="Twitter">
-          <svg width="24" height="24" fill="currentColor" style="vertical-align:middle;"><use xlink:href="#icon-twitter"/></svg>
-        </a>
-        <a href="https://facebook.com/vulaegis" class="text-white me-3" target="_blank" title="Facebook">
-          <svg width="24" height="24" fill="currentColor" style="vertical-align:middle;"><use xlink:href="#icon-facebook"/></svg>
-        </a>
-        <a href="https://instagram.com/vulaegis" class="text-white" target="_blank" title="Instagram">
-          <svg width="24" height="24" fill="currentColor" style="vertical-align:middle;"><use xlink:href="#icon-instagram"/></svg>
-        </a>
-      </div>
-    </div>
-    <hr class="bg-light mt-4 mb-3">
-    <div class="row">
-      <div class="col-md-6 small">
-        &copy; 2025 Vulaegis Safety Ltd. All rights reserved.
-      </div>
-      <div class="col-md-6 text-md-end small">
-        <a href="privacy.html" class="text-white text-decoration-none me-3">Privacy Policy</a>
-        <a href="terms.html" class="text-white text-decoration-none">Terms of Service</a>
+        <p class="mt-2">Loading case studies...</p>
       </div>
     </div>
   </div>
+  
+  <!-- Completed Tab -->
+  <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completed-tab">
+    <div class="row g-4" id="completed-studies">
+      <div class="col-12 text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Loading case studies...</p>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <!-- SVG ICONS (place once in your HTML, e.g. before </body>) -->
-  <svg style="display:none;">
-    <symbol id="icon-linkedin" viewBox="0 0 24 24">
-      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.268c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.5 10.268h-3v-4.604c0-1.099-.021-2.513-1.531-2.513-1.531 0-1.767 1.197-1.767 2.434v4.683h-3v-9h2.881v1.229h.041c.401-.759 1.379-1.561 2.838-1.561 3.034 0 3.595 1.997 3.595 4.594v4.738z"/>
-    </symbol>
-    <symbol id="icon-twitter" viewBox="0 0 24 24">
-      <path d="M24 4.557a9.83 9.83 0 0 1-2.828.775 4.932 4.932 0 0 0 2.165-2.724c-.951.564-2.005.974-3.127 1.195a4.916 4.916 0 0 0-8.384 4.482c-4.083-.205-7.697-2.159-10.125-5.134a4.822 4.822 0 0 0-.664 2.475c0 1.708.87 3.216 2.188 4.099a4.904 4.904 0 0 1-2.228-.616c-.054 2.281 1.581 4.415 3.949 4.89a4.936 4.936 0 0 1-2.224.084c.627 1.956 2.444 3.377 4.6 3.417a9.868 9.868 0 0 1-6.102 2.104c-.396 0-.788-.023-1.175-.069a13.945 13.945 0 0 0 7.548 2.212c9.057 0 14.009-7.513 14.009-14.009 0-.213-.005-.425-.014-.636a10.025 10.025 0 0 0 2.46-2.548l-.047-.02z"/>
-    </symbol>
-    <symbol id="icon-facebook" viewBox="0 0 24 24">
-      <path d="M22.675 0h-21.35c-.733 0-1.325.592-1.325 1.325v21.351c0 .732.592 1.324 1.325 1.324h11.495v-9.294h-3.124v-3.622h3.124v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.797.143v3.24l-1.919.001c-1.504 0-1.797.715-1.797 1.763v2.312h3.587l-.467 3.622h-3.12v9.294h6.116c.73 0 1.322-.592 1.322-1.324v-21.35c0-.733-.592-1.325-1.325-1.325z"/>
-    </symbol>
-    <symbol id="icon-instagram" viewBox="0 0 24 24">
-      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.309.974.974 1.247 2.242 1.309 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.334 2.633-1.309 3.608-.974.974-2.242 1.247-3.608 1.309-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.334-3.608-1.309-.974-.974-1.247-2.242-1.309-3.608-.058-1.266-.07-1.646-.07-4.85s.012-3.584.07-4.85c.062-1.366.334-2.633 1.309-3.608.974-.974 2.242-1.247 3.608-1.309 1.266-.058 1.646-.07 4.85-.07zm0-2.163c-3.259 0-3.667.012-4.947.072-1.276.059-2.675.334-3.637 1.297-.962.962-1.238 2.361-1.297 3.637-.06 1.28-.072 1.688-.072 4.947s.012 3.667.072 4.947c.059 1.276.334 2.675 1.297 3.637.962.962 2.361 1.238 3.637 1.297 1.28.06 1.688.072 4.947.072s3.667-.012 4.947-.072c1.276-.059 2.675-.334 3.637-1.297.962-.962 1.238-2.361 1.297-3.637.06-1.28.072-1.688.072-4.947s-.012-3.667-.072-4.947c-.059-1.276-.334-2.675-1.297-3.637-.962-.962-2.361-1.238-3.637-1.297-1.28-.06-1.688-.072-4.947-.072zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zm0 10.162a3.999 3.999 0 1 1 0-7.998 3.999 3.999 0 0 1 0 7.998zm6.406-11.845a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/>
-    </symbol>
-  </svg>
-</footer>
+<!-- Add this script at the bottom of your case-studies.html, before closing body tag -->
+<script>
+// Your Google Sheets URL (CSV format)
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZEZswOKOUaXz2UzyJE2bKtavohwpqUbqaaXGa-YmDQAN79tgrA34d-MtxTT-JKNsVe28cJ1BQCfNY/pub?output=csv';
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+// Load case studies when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  loadCaseStudies();
+});
+
+async function loadCaseStudies() {
+  try {
+    // Try to load from Google Sheets first
+    const response = await fetch(SHEET_URL);
+    const csvText = await response.text();
+    const caseStudies = parseCSV(csvText);
+    
+    if (caseStudies.length > 0) {
+      displayCaseStudies(caseStudies);
+    } else {
+      // Fallback to localStorage
+      const localCaseStudies = JSON.parse(localStorage.getItem('vulaegisCaseStudies') || '[]');
+      if (localCaseStudies.length > 0) {
+        displayCaseStudies(localCaseStudies);
+      } else {
+        showNoStudiesMessage();
+      }
+    }
+  } catch (error) {
+    console.error('Error loading from Google Sheets:', error);
+    // Fallback to localStorage
+    const localCaseStudies = JSON.parse(localStorage.getItem('vulaegisCaseStudies') || '[]');
+    if (localCaseStudies.length > 0) {
+      displayCaseStudies(localCaseStudies);
+    } else {
+      showNoStudiesMessage();
+    }
+  }
+}
+
+function parseCSV(csvText) {
+  const lines = csvText.split('\n');
+  const caseStudies = [];
+  
+  // Skip header row and start from index 1
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    
+    // Simple CSV parsing
+    const columns = line.split(',').map(col => col.trim().replace(/^"|"$/g, ''));
+    
+    if (columns.length >= 5) {
+      caseStudies.push({
+        id: columns[0] || i,
+        title: columns[1],
+        abstract: columns[2],
+        status: columns[3],
+        driveLink: columns[4]
+      });
+    }
+  }
+  
+  return caseStudies;
+}
+
+function displayCaseStudies(caseStudies) {
+  // Clear existing content
+  document.getElementById('ongoing-studies').innerHTML = '';
+  document.getElementById('review-studies').innerHTML = '';
+  document.getElementById('completed-studies').innerHTML = '';
+  
+  if (caseStudies.length === 0) {
+    showNoStudiesMessage();
+    return;
+  }
+  
+  // Sort case studies by status
+  caseStudies.forEach(caseStudy => {
+    const cardHTML = `
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 border-0 shadow">
+          <div class="card-body">
+            ${getStatusBadge(caseStudy.status)}
+            <h5 class="card-title">${caseStudy.title}</h5>
+            <p class="card-text">${caseStudy.abstract}</p>
+            <a href="${caseStudy.driveLink}" class="btn btn-primary btn-sm" target="_blank">View Full Report</a>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Add to appropriate section based on status
+    switch(caseStudy.status) {
+      case 'ongoing':
+        document.getElementById('ongoing-studies').innerHTML += cardHTML;
+        break;
+      case 'review':
+        document.getElementById('review-studies').innerHTML += cardHTML;
+        break;
+      case 'completed':
+        document.getElementById('completed-studies').innerHTML += cardHTML;
+        break;
+    }
+  });
+}
+
+function getStatusBadge(status) {
+  const badges = {
+    'ongoing': '<span class="badge bg-warning text-dark status-badge mb-2">Ongoing</span>',
+    'review': '<span class="badge bg-info status-badge mb-2">Under Review</span>',
+    'completed': '<span class="badge bg-success status-badge mb-2">Completed</span>'
+  };
+  return badges[status] || '';
+}
+
+function showNoStudiesMessage() {
+  const message = `
+    <div class="col-12 text-center py-5">
+      <h4>No case studies yet</h4>
+      <p class="text-muted">Add your first case study using the admin panel</p>
+      <a href="admin-case-studies.html" class="btn btn-primary">Go to Admin Panel</a>
+    </div>
+  `;
+  
+  document.getElementById('ongoing-studies').innerHTML = message;
+}
+</script>
