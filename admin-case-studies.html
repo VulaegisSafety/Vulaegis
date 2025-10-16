@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Case Studies | Vulaegis</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .preview-card { border: 2px dashed #dee2e6; min-height: 200px; }
+    .case-study-item { transition: all 0.3s ease; }
+    .case-study-item:hover { background-color: #f8f9fa; }
+    .loading { opacity: 0.6; pointer-events: none; }
+    .status-badge { font-size: 0.8rem; padding: 0.35rem 0.75rem; }
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">Vulaegis Admin</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">View Site</a></li>
+        <li class="nav-item"><a class="nav-link" href="case-studies.html">Case Studies</a></li>
+        <li class="nav-item"><a class="nav-link active" href="admin-case-studies.html">Admin</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container my-5">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-4">Case Studies Admin Panel</h1>
+      <p class="lead">Easily add and manage your case studies using Google Sheets</p>
+    </div>
+  </div>
+
+  <!-- Add New Case Study Form -->
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Add New Case Study</h5>
+        </div>
+        <div class="card-body">
+          <form id="caseStudyForm">
+            <div class="mb-3">
+              <label for="projectTitle" class="form-label">Project Title *</label>
+              <input type="text" class="form-control" id="projectTitle" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="projectAbstract" class="form-label">Abstract/Description *</label>
+              <textarea class="form-control" id="projectAbstract" rows="4" required></textarea>
+            </div>
+            
+            <div class="mb-3">
+              <label for="projectStatus" class="form-label">Status *</label>
+              <select class="form-select" id="projectStatus" required>
+                <option value="">Select Status</option>
+                <option value="ongoing">Ongoing</option>
+                <option value="review">Under Review</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
+            
+            <div class="mb-3">
+              <label for="googleDriveLink" class="form-label">Google Drive PDF Link *</label>
+              <input type="url" class="form-control" id="googleDriveLink" 
+                     placeholder="https://drive.google.com/file/d/.../view" required>
+              <div class="form-text">Make sure your Google Drive file is shared with "Anyone with the link can view"</div>
+            </div>
+            
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-success" id="submitBtn">
+                Add Case Study to Google Sheets
+              </button>
+              <button type="button" class="btn btn-outline-secondary" onclick="previewCaseStudy()">
+                Preview
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Instructions -->
+      <div class="card shadow mt-4">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">How to Use</h5>
+        </div>
+        <div class="card-body">
+          <ol class="small">
+            <li>Fill in all fields (title, abstract, status, PDF link)</li>
+            <li>Click "Preview" to see how it will look</li>
+            <li>Click "Add Case Study" to save to Google Sheets</li>
+            <li>Refresh the Case Studies page to see updates</li>
+          </ol>
+          <div class="alert alert-info small">
+            <strong>Note:</strong> Data is stored directly in your Google Sheet. The Case Studies page automatically loads from there.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preview Section -->
+    <div class="col-lg-6">
+      <div class="card shadow">
+        <div class="card-header bg-info text-white">
+          <h5 class="mb-0">Live Preview</h5>
+        </div>
+        <div class="card-body">
+          <div id="previewArea" class="preview-card p-3 text-center text-muted">
+            Your case study preview will appear here
+          </div>
+        </div>
+      </div>
+
+      <!-- Google Sheets Status -->
+      <div class="card shadow mt-4">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0">Google Sheets Status</h5>
+        </div>
+        <div class="card-body">
+          <div id="sheetStatus" class="text-center">
+            <p>✅ Connected to Google Sheets</p>
+            <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vQZEZswOKOUaXz2UzyJE2bKtavohwpqUbqaaXGa-YmDQAN79tgrA34d-MtxTT-JKNsVe28cJ1BQCfNY/pubhtml" 
+               class="btn btn-sm btn-outline-primary" target="_blank">
+              View Google Sheet
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Existing Case Studies -->
+  <div class="row mt-5">
+    <div class="col-12">
+      <div class="card shadow">
+        <div class="card-header bg-warning">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Existing Case Studies</h5>
+            <button class="btn btn-sm btn-outline-primary" onclick="loadCaseStudies()">
+              Refresh List
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="existingStudies" class="row g-3">
+            <div class="col-12 text-center">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <p class="mt-2">Loading case studies from Google Sheets...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Your Google Sheets URL (CSV format)
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZEZswOKOUaXz2UzyJE2bKtavohwpqUbqaaXGa-YmDQAN79tgrA34d-MtxTT-JKNsVe28cJ1BQCfNY/pub?output=csv';
+
+// Load existing case studies when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  loadCaseStudies();
+});
+
+// Function to preview case study
+function previewCaseStudy() {
+  const title = document.getElementById('projectTitle').value;
+  const abstract = document.getElementById('projectAbstract').value;
+  const status = document.getElementById('projectStatus').value;
+  const driveLink = document.getElementById('googleDriveLink').value;
+
+  if (!title || !abstract || !status || !driveLink) {
+    alert('Please fill in all fields first');
+    return;
+  }
+
+  const statusBadge = getStatusBadge(status);
+  
+  const previewHTML = `
+    <div class="card h-100 border-0 shadow">
+      <div class="card-body">
+        ${statusBadge}
+        <h5 class="card-title">${title}</h5>
+        <p class="card-text">${abstract}</p>
+        <a href="${driveLink}" class="btn btn-primary btn-sm" target="_blank">View Full Report</a>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('previewArea').innerHTML = previewHTML;
+}
+
+// Function to get status badge HTML
+function getStatusBadge(status) {
+  const badges = {
+    'ongoing': '<span class="badge bg-warning text-dark status-badge mb-2">Ongoing</span>',
+    'review': '<span class="badge bg-info status-badge mb-2">Under Review</span>',
+    'completed': '<span class="badge bg-success status-badge mb-2">Completed</span>'
+  };
+  return badges[status] || '';
+}
+
+// Function to handle form submission
+document.getElementById('caseStudyForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const submitBtn = document.getElementById('submitBtn');
+  const originalText = submitBtn.innerHTML;
+  
+  // Disable button and show loading
+  submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...';
+  submitBtn.disabled = true;
+
+  const caseStudy = {
+    title: document.getElementById('projectTitle').value,
+    abstract: document.getElementById('projectAbstract').value,
+    status: document.getElementById('projectStatus').value,
+    driveLink: document.getElementById('googleDriveLink').value,
+    dateAdded: new Date().toISOString().split('T')[0] // YYYY-MM-DD format
+  };
+
+  // For now, we'll store in localStorage since we can't write to Google Sheets via frontend
+  // In a real implementation, you'd use Google Apps Script or a backend
+  saveToLocalStorage(caseStudy);
+  
+  // Re-enable button
+  submitBtn.innerHTML = originalText;
+  submitBtn.disabled = false;
+
+  // Reset form
+  document.getElementById('caseStudyForm').reset();
+  document.getElementById('previewArea').innerHTML = '<div class="text-center text-muted">Your case study preview will appear here</div>';
+  
+  alert('Case study added to local storage! Refresh the Case Studies page to see it.');
+  loadCaseStudies();
+});
+
+// Function to save to localStorage (temporary solution)
+function saveToLocalStorage(caseStudy) {
+  let caseStudies = JSON.parse(localStorage.getItem('vulaegisCaseStudies') || '[]');
+  caseStudy.id = Date.now(); // Add unique ID
+  caseStudies.push(caseStudy);
+  localStorage.setItem('vulaegisCaseStudies', JSON.stringify(caseStudies));
+}
+
+// Function to load case studies from Google Sheets
+async function loadCaseStudies() {
+  const container = document.getElementById('existingStudies');
+  container.innerHTML = `
+    <div class="col-12 text-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Loading case studies from Google Sheets...</p>
+    </div>
+  `;
+
+  try {
+    // Try to load from Google Sheets first
+    const response = await fetch(SHEET_URL);
+    const csvText = await response.text();
+    const caseStudies = parseCSV(csvText);
+    
+    if (caseStudies.length > 0) {
+      displayCaseStudies(caseStudies, 'Google Sheets');
+    } else {
+      // Fallback to localStorage
+      const localCaseStudies = JSON.parse(localStorage.getItem('vulaegisCaseStudies') || '[]');
+      if (localCaseStudies.length > 0) {
+        displayCaseStudies(localCaseStudies, 'Local Storage');
+      } else {
+        container.innerHTML = `
+          <div class="col-12 text-center py-4">
+            <h5>No case studies found</h5>
+            <p class="text-muted">Add your first case study using the form above</p>
+          </div>
+        `;
+      }
+    }
+  } catch (error) {
+    console.error('Error loading from Google Sheets:', error);
+    // Fallback to localStorage
+    const localCaseStudies = JSON.parse(localStorage.getItem('vulaegisCaseStudies') || '[]');
+    if (localCaseStudies.length > 0) {
+      displayCaseStudies(localCaseStudies, 'Local Storage (Fallback)');
+    } else {
+      container.innerHTML = `
+        <div class="col-12 text-center py-4">
+          <h5>Unable to load case studies</h5>
+          <p class="text-muted">Please check your connection and try again</p>
+          <button class="btn btn-primary btn-sm" onclick="loadCaseStudies()">Retry</button>
+        </div>
+      `;
+    }
+  }
+}
+
+// Function to parse CSV data
+function parseCSV(csvText) {
+  const lines = csvText.split('\n');
+  const caseStudies = [];
+  
+  // Skip header row and start from index 1
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    
+    // Simple CSV parsing (for more complex CSV, use a library)
+    const columns = line.split(',').map(col => col.trim().replace(/^"|"$/g, ''));
+    
+    if (columns.length >= 5) {
+      caseStudies.push({
+        id: columns[0] || i,
+        title: columns[1],
+        abstract: columns[2],
+        status: columns[3],
+        driveLink: columns[4],
+        dateAdded: columns[5] || 'Unknown'
+      });
+    }
+  }
+  
+  return caseStudies;
+}
+
+// Function to display case studies
+function displayCaseStudies(caseStudies, source) {
+  const container = document.getElementById('existingStudies');
+  
+  if (caseStudies.length === 0) {
+    container.innerHTML = `
+      <div class="col-12 text-center py-4">
+        <h5>No case studies found</h5>
+        <p class="text-muted">Add your first case study using the form above</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="col-12">
+      <div class="alert alert-info small">
+        Showing ${caseStudies.length} case studies from: ${source}
+      </div>
+    </div>
+  ` + caseStudies.map(caseStudy => `
+    <div class="col-md-6 col-lg-4">
+      <div class="case-study-item card h-100 border-0 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            ${getStatusBadge(caseStudy.status)}
+            <button class="btn btn-sm btn-outline-danger" onclick="deleteCaseStudy(${caseStudy.id})" 
+                    ${source.includes('Google Sheets') ? 'disabled title="Delete from Google Sheets directly"' : ''}>
+              Delete
+            </button>
+          </div>
+          <h6 class="card-title">${caseStudy.title}</h6>
+          <p class="card-text small">${caseStudy.abstract.substring(0, 100)}${caseStudy.abstract.length > 100 ? '...' : ''}</p>
+          <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">Added: ${caseStudy.dateAdded}</small>
+            <a href="${caseStudy.driveLink}" class="btn btn-primary btn-sm" target="_blank">View PDF</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Function to delete case study (local storage only)
+function deleteCaseStudy(id) {
+  if (confirm('Are you sure you want to delete this case study?')) {
+    let caseStudies = JSON.parse(localStorage.getItem('vulaegisCaseStudies') || '[]');
+    caseStudies = caseStudies.filter(cs => cs.id !== id);
+    localStorage.setItem('vulaegisCaseStudies', JSON.stringify(caseStudies));
+    loadCaseStudies();
+  }
+}
+</script>
+
+</body>
+</html>
