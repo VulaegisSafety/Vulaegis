@@ -175,11 +175,11 @@
         </div>
         <div class="card-body">
           <div class="d-flex align-items-center">
-            <div id="connectionStatus" class="text-success">
-              <i class="bi bi-check-circle-fill"></i> Connected to Google Sheets
+            <div id="connectionStatus" class="text-warning">
+              <i class="bi bi-exclamation-triangle"></i> CORS Restricted - Use Local Testing
             </div>
           </div>
-          <small class="text-muted mt-2">Web App URL configured and working</small>
+          <small class="text-muted mt-2">For GitHub Pages, test locally or use the workaround below</small>
         </div>
       </div>
     </div>
@@ -208,16 +208,70 @@
       </div>
     </div>
   </div>
+
+  <!-- Workaround Instructions -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="alert alert-info">
+        <h6><i class="bi bi-info-circle"></i> CORS Workaround Required</h6>
+        <p class="mb-2">Due to GitHub Pages restrictions, you need to:</p>
+        <ol class="mb-2">
+          <li><strong>Test locally</strong> - Download and open the HTML file directly in your browser</li>
+          <li><strong>Or use a CORS proxy</strong> - Update the script URL as shown below</li>
+        </ol>
+        <button class="btn btn-sm btn-outline-info" onclick="enableCorsProxy()">Enable CORS Proxy</button>
+        <button class="btn btn-sm btn-outline-info" onclick="downloadForLocalUse()">Download for Local Use</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-// Your Web App URL - Pre-configured and ready to use
+// Your Web App URL
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzg2MGPEZEqNy-EAaP0Avn4X2CA5CYOuHnXIl-5cfudDhhhI4uxyFQtyaJx37nN5f6Q/exec';
+let useCorsProxy = false;
 
 // Load case studies automatically when page loads
 document.addEventListener('DOMContentLoaded', function() {
+  // Check if we're on GitHub Pages
+  if (window.location.hostname === 'vulaegissafety.github.io') {
+    document.getElementById('connectionStatus').innerHTML = 
+      '<i class="bi bi-exclamation-triangle text-warning"></i> CORS Restricted - Use buttons below';
+  }
   loadCaseStudies();
 });
+
+// Function to enable CORS proxy
+function enableCorsProxy() {
+  useCorsProxy = true;
+  document.getElementById('connectionStatus').innerHTML = 
+    '<i class="bi bi-check-circle text-success"></i> CORS Proxy Enabled';
+  showSuccess('CORS proxy enabled. Try loading case studies again.');
+}
+
+// Function to download for local use
+function downloadForLocalUse() {
+  const htmlContent = document.documentElement.outerHTML;
+  const blob = new Blob([htmlContent], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'vulaegis-admin-local.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showSuccess('File downloaded. Open it directly in your browser to avoid CORS restrictions.');
+}
+
+// Function to get the actual URL (with proxy if enabled)
+function getScriptUrl() {
+  if (useCorsProxy) {
+    // Using a public CORS proxy
+    return 'https://cors-anywhere.herokuapp.com/' + SCRIPT_URL;
+  }
+  return SCRIPT_URL;
+}
 
 // Function to preview case study
 function previewCaseStudy() {
@@ -277,7 +331,7 @@ document.getElementById('caseStudyForm').addEventListener('submit', async functi
   };
 
   try {
-    const response = await fetch(SCRIPT_URL, {
+    const response = await fetch(getScriptUrl(), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -308,7 +362,7 @@ document.getElementById('caseStudyForm').addEventListener('submit', async functi
     }
   } catch (error) {
     console.error('Error:', error);
-    alert('Error adding case study: ' + error.message);
+    alert('Error adding case study: ' + error.message + '\n\nTry downloading for local use.');
   } finally {
     // Re-enable button
     submitBtn.innerHTML = originalText;
@@ -326,7 +380,7 @@ async function loadCaseStudies() {
   container.innerHTML = '';
 
   try {
-    const response = await fetch(SCRIPT_URL, {
+    const response = await fetch(getScriptUrl(), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -353,11 +407,13 @@ async function loadCaseStudies() {
       <div class="col-12 text-center py-5">
         <i class="bi bi-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
         <h4 class="mt-3">Unable to Load Case Studies</h4>
-        <p class="text-muted">Error: ${error.message}</p>
+        <p class="text-muted">CORS Error: Cannot connect from GitHub Pages</p>
         <div class="mt-3">
-          <button class="btn btn-primary me-2" onclick="loadCaseStudies()">Try Again</button>
-          <a href="https://docs.google.com/spreadsheets/d/1lx8VbDQUmvFnSWgsKzvSV_RYv3BAJF5TJk-I-82QC3c/edit" 
-             class="btn btn-outline-secondary" target="_blank">View Google Sheet</a>
+          <button class="btn btn-primary me-2" onclick="enableCorsProxy()">Enable CORS Proxy</button>
+          <button class="btn btn-outline-secondary" onclick="downloadForLocalUse()">Download for Local Use</button>
+        </div>
+        <div class="mt-3">
+          <small class="text-muted">Or test locally by opening the HTML file directly in your browser</small>
         </div>
       </div>
     `;
@@ -484,7 +540,7 @@ async function deleteCaseStudy(id) {
   }
 
   try {
-    const response = await fetch(SCRIPT_URL, {
+    const response = await fetch(getScriptUrl(), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
