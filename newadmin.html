@@ -77,7 +77,7 @@
     </div>
   </section>
 
-  <!-- Dashboard Section (Same as before, but with dynamic user info) -->
+  <!-- Dashboard Section -->
   <section id="dashboardSection" class="dashboard-section">
     <nav class="navbar navbar-expand-lg navbar-dark admin-header sticky-top">
       <div class="container">
@@ -111,7 +111,7 @@
         </div>
       </div>
 
-      <!-- Rest of your dashboard content remains the same -->
+      <!-- Dashboard Stats -->
       <div class="row mb-5">
         <div class="col-md-3 mb-3">
           <div class="stats-card text-center p-4">
@@ -143,16 +143,28 @@
         </div>
       </div>
 
-      <!-- Your existing dashboard content... -->
-      <!-- ... (include all your existing dashboard HTML) ... -->
-      
+      <!-- Admin Content -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card feature-card">
+            <div class="card-body">
+              <h5 class="card-title"><i class="bi bi-speedometer2 me-2"></i>Admin Dashboard</h5>
+              <p class="card-text">You have successfully authenticated using credentials from Google Sheets.</p>
+              <div class="mt-4">
+                <button class="btn btn-admin-primary me-2">Manage Users</button>
+                <button class="btn btn-admin-success">View Reports</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
 <script>
-// Your Google Apps Script Web App URL
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwXqcikpDsdotmulfaJPnwphSDdHeVJjZaIvazN3mcgWzj_8g8u_uJ2VT05g7ig2a9m/exec';
-
+// Google Sheet Configuration
+const SHEET_ID = '155hfKk_RikbgGWyE-8xhmwwvKmcg9CRAOP1or5Sp3Go';
+const SHEET_NAME = 'Sheet1';
 let currentUser = null;
 
 // Check if user is already logged in
@@ -164,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-// Login Form Handler - Now authenticates via Google Sheets
+// Login Form Handler
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   
@@ -179,45 +191,110 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
   loginMessage.innerHTML = '';
   
   try {
-    const response = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        action: 'authenticate',
-        username: username,
-        password: password
-      })
-    });
+    // Fetch data from Google Sheets as CSV
+    const users = await fetchSheetData();
     
-    const result = await response.json();
+    // Authenticate user
+    const authenticatedUser = authenticate(users, username, password);
     
-    if (result.success) {
-      currentUser = result.user;
+    if (authenticatedUser) {
+      currentUser = authenticatedUser;
       localStorage.setItem('currentUser', JSON.stringify(currentUser));
       showDashboard();
     } else {
-      loginMessage.innerHTML = `
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-          <i class="bi bi-exclamation-triangle me-2"></i>${result.error}
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-      `;
+      showMessage('Invalid username or password', 'danger');
     }
   } catch (error) {
-    loginMessage.innerHTML = `
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <i class="bi bi-exclamation-triangle me-2"></i>Network error: Unable to authenticate
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    `;
+    console.error('Authentication error:', error);
+    showMessage('Authentication failed. Please check your credentials.', 'danger');
   } finally {
     // Reset button state
     loginBtn.innerHTML = '<i class="bi bi-box-arrow-in-right me-2"></i>Access Dashboard';
     loginBtn.disabled = false;
   }
 });
+
+// Fetch data from Google Sheets as CSV
+async function fetchSheetData() {
+  // Convert Google Sheet to CSV URL
+  const csvUrl = `https://docs.google.com/spreadsheets/d/${155hfKk_RikbgGWyE-8xhmwwvKmcg9CRAOP1or5Sp3Go}/gviz/tq?tqx=out:csv&sheet=${AdminUsers}`;
+  
+  const response = await fetch(csvUrl);
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch data from Google Sheets');
+  }
+  
+  const csvText = await response.text();
+  
+  if (!csvText) {
+    throw new Error('No data found in the sheet');
+  }
+  
+  // Parse CSV data
+  const users = parseCSV(csvText);
+  return users;
+}
+
+// Simple CSV parser
+function parseCSV(csvText) {
+  const lines = csvText.split('\n');
+  const headers = lines[0].split(',').map(header => 
+    header.toLowerCase().replace(/"/g, '').trim()
+  );
+  
+  const users = [];
+  
+  for (let i = 1; i < lines.length; i++) {
+    if (lines[i].trim() === '') continue;
+    
+    const values = parseCSVLine(lines[i]);
+    const user = {};
+    
+    headers.forEach((header, index) => {
+      user[header] = values[index] ? values[index].replace(/"/g, '').trim() : '';
+    });
+    
+    users.push(user);
+  }
+  
+  return users;
+}
+
+// Parse CSV line considering quoted values
+function parseCSVLine(line) {
+  const values = [];
+  let current = '';
+  let inQuotes = false;
+  
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    
+    if (char === '"') {
+      inQuotes = !inQuotes;
+    } else if (char === ',' && !inQuotes) {
+      values.push(current);
+      current = '';
+    } else {
+      current += char;
+    }
+  }
+  
+  values.push(current);
+  return values;
+}
+
+// Authenticate user against the fetched data
+function authenticate(users, username, password) {
+  return users.find(user => {
+    // Try different possible username fields
+    const userUsername = user.username || user.email || user.user || user.name;
+    // Try different possible password fields
+    const userPassword = user.password || user.pass || user.pwd;
+    
+    return userUsername === username && userPassword === password;
+  });
+}
 
 // Toggle Password Visibility
 function togglePassword() {
@@ -233,6 +310,19 @@ function togglePassword() {
   }
 }
 
+// Show message helper
+function showMessage(message, type) {
+  const loginMessage = document.getElementById('loginMessage');
+  const icon = type === 'danger' ? 'exclamation-triangle' : 'info-circle';
+  
+  loginMessage.innerHTML = `
+    <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+      <i class="bi bi-${icon} me-2"></i>${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  `;
+}
+
 // Show Dashboard with User Info
 function showDashboard() {
   document.getElementById('loginSection').style.display = 'none';
@@ -240,9 +330,10 @@ function showDashboard() {
   
   // Update UI with user information
   if (currentUser) {
-    document.getElementById('currentUsername').textContent = currentUser.username;
-    document.getElementById('welcomeUsername').textContent = currentUser.username;
-    document.getElementById('userRoleBadge').textContent = currentUser.role;
+    const username = currentUser.username || currentUser.email || currentUser.user;
+    document.getElementById('currentUsername').textContent = username;
+    document.getElementById('welcomeUsername').textContent = username;
+    document.getElementById('userRoleBadge').textContent = currentUser.role || 'Admin';
     
     // Show/hide features based on role
     handleRoleBasedAccess(currentUser.role);
@@ -281,11 +372,15 @@ function logout() {
 
 // Update Dashboard Statistics
 function updateDashboardStats() {
-  // Your existing stats update code
   document.getElementById('caseStudyCount').textContent = '12';
   document.getElementById('blogPostCount').textContent = '8';
   document.getElementById('userCount').textContent = '156';
   document.getElementById('submissionCount').textContent = '24';
+}
+
+// Show section function
+function showSection(sectionName) {
+  console.log('Showing section:', sectionName);
 }
 </script>
 
