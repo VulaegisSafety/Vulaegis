@@ -15,7 +15,9 @@
     .form-section { background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
     .btn-primary { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); border: none; }
     .btn-success { background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%); border: none; }
-    .empty-state { opacity: 0.7; }
+    .form-iframe { border: none; border-radius: 8px; width: 100%; }
+    .form-container { position: relative; }
+    .form-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; flex-direction: column; border-radius: 8px; }
   </style>
 </head>
 <body class="bg-light">
@@ -38,7 +40,7 @@
     <div class="row mb-5">
       <div class="col-12 text-center">
         <h1 class="display-5 fw-bold text-dark mb-3">Case Studies Management</h1>
-        <p class="lead text-muted">Manage and showcase your safety project portfolio</p>
+        <p class="lead text-muted">Add and manage your safety project portfolio</p>
       </div>
     </div>
 
@@ -71,44 +73,52 @@
     </div>
 
     <div class="row">
-      <!-- Quick Actions -->
-      <div class="col-lg-4 mb-4">
+      <!-- Google Form Integration -->
+      <div class="col-lg-5 mb-4">
         <div class="form-section p-4 h-100">
           <div class="d-flex align-items-center mb-4">
             <div class="bg-primary rounded-circle p-2 me-3">
-              <i class="bi bi-lightning text-white"></i>
+              <i class="bi bi-plus-lg text-white"></i>
             </div>
             <div>
-              <h4 class="mb-0 fw-bold">Quick Actions</h4>
-              <p class="text-muted mb-0">Manage your portfolio</p>
+              <h4 class="mb-0 fw-bold">Add New Case Study</h4>
+              <p class="text-muted mb-0">Submit via Google Form</p>
             </div>
           </div>
 
-          <div class="d-grid gap-3">
-            <a href="https://docs.google.com/spreadsheets/d/1lx8VbDQUmvFnSWgsKzvSV_RYv3BAJF5TJk-I-82QC3c/edit" 
-               class="btn btn-success btn-lg py-3" target="_blank">
-              <i class="bi bi-google me-2"></i>Edit in Google Sheets
-            </a>
+          <div class="form-container">
+            <!-- Your Google Form Embed -->
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScbhcKhZ7hPGjyWc9a_8E9gVdBh3eD5ho-3rhbgxlm9Lo0Bxg/viewform?embedded=true" 
+                    class="form-iframe" height="650" frameborder="0" marginheight="0" marginwidth="0">
+              Loading Google Form...
+            </iframe>
             
-            <button class="btn btn-outline-primary btn-lg py-3" onclick="loadCaseStudies()">
-              <i class="bi bi-arrow-clockwise me-2"></i>Refresh Portfolio
-            </button>
-
-            <div class="mt-3 p-3 bg-light rounded">
-              <h6 class="fw-semibold">Adding New Projects:</h6>
-              <ol class="small text-muted mb-0">
-                <li>Click "Edit in Google Sheets"</li>
-                <li>Add new row at the bottom</li>
-                <li>Use the format shown in sheet</li>
-                <li>Click "Refresh Portfolio"</li>
-              </ol>
+            <!-- Success Message Overlay (hidden by default) -->
+            <div id="successOverlay" class="form-overlay" style="display: none;">
+              <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+              <h4 class="mt-3 text-success">Case Study Submitted!</h4>
+              <p class="text-muted">Your case study has been added successfully.</p>
+              <button class="btn btn-primary mt-2" onclick="hideSuccessOverlay()">
+                Add Another Case Study
+              </button>
             </div>
+          </div>
+
+          <div class="mt-3 p-3 bg-light rounded">
+            <h6 class="fw-semibold mb-2">Form Submission Tips:</h6>
+            <ul class="small text-muted mb-0">
+              <li>Fill all required fields marked with *</li>
+              <li>Use descriptive project titles</li>
+              <li>Include complete Google Drive PDF links</li>
+              <li>Select the appropriate project status</li>
+              <li>Click "Refresh Portfolio" after submission</li>
+            </ul>
           </div>
         </div>
       </div>
 
-      <!-- Case Studies List -->
-      <div class="col-lg-8">
+      <!-- Case Studies Portfolio -->
+      <div class="col-lg-7">
         <div class="form-section p-4">
           <div class="d-flex justify-content-between align-items-center mb-4">
             <div class="d-flex align-items-center">
@@ -148,22 +158,28 @@
       </div>
     </div>
 
-    <!-- Portfolio Overview -->
-    <div class="row mt-5">
+    <!-- Quick Actions -->
+    <div class="row mt-4">
       <div class="col-12">
         <div class="form-section p-4">
-          <div class="d-flex align-items-center mb-4">
-            <div class="bg-info rounded-circle p-2 me-3">
-              <i class="bi bi-graph-up text-white"></i>
+          <div class="row">
+            <div class="col-md-4">
+              <a href="https://docs.google.com/forms/d/1FAIpQLScbhcKhZ7hPGjyWc9a_8E9gVdBh3eD5ho-3rhbgxlm9Lo0Bxg/edit" 
+                 class="btn btn-outline-primary w-100 py-3" target="_blank">
+                <i class="bi bi-pencil me-2"></i>Edit Form
+              </a>
             </div>
-            <div>
-              <h4 class="mb-0 fw-bold">Portfolio Overview</h4>
-              <p class="text-muted mb-0">Live data from Google Sheets</p>
+            <div class="col-md-4">
+              <a href="https://docs.google.com/spreadsheets/d/1lx8VbDQUmvFnSWgsKzvSV_RYv3BAJF5TJk-I-82QC3c/edit" 
+                 class="btn btn-outline-success w-100 py-3" target="_blank">
+                <i class="bi bi-google me-2"></i>View Responses
+              </a>
             </div>
-          </div>
-
-          <div class="row" id="portfolioOverview">
-            <!-- Portfolio data will be loaded here -->
+            <div class="col-md-4">
+              <button class="btn btn-outline-info w-100 py-3" onclick="loadCaseStudies(); showSuccessOverlay();">
+                <i class="bi bi-arrow-clockwise me-2"></i>Refresh Portfolio
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -181,7 +197,7 @@
   </div>
 
 <script>
-// Published Google Sheets CSV URL - No CORS issues!
+// Published Google Sheets CSV URL for reading
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZEZswOKOUaXz2UzyJE2bKtavohwpqUbqaaXGa-YmDQAN79tgrA34d-MtxTT-JKNsVe28cJ1BQCfNY/pub?output=csv';
 
 let allCaseStudies = [];
@@ -190,7 +206,31 @@ let currentFilter = 'all';
 // Load case studies automatically when page loads
 document.addEventListener('DOMContentLoaded', function() {
   loadCaseStudies();
+  
+  // Check for form submission success
+  checkFormSubmission();
 });
+
+// Check URL parameters for form submission success
+function checkFormSubmission() {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('submit') === 'success') {
+    showSuccessOverlay();
+    // Clean URL
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+}
+
+// Show success overlay after form submission
+function showSuccessOverlay() {
+  document.getElementById('successOverlay').style.display = 'flex';
+  loadCaseStudies(); // Refresh the portfolio
+}
+
+// Hide success overlay
+function hideSuccessOverlay() {
+  document.getElementById('successOverlay').style.display = 'none';
+}
 
 // Load case studies directly from published Google Sheets CSV
 async function loadCaseStudies() {
@@ -210,7 +250,6 @@ async function loadCaseStudies() {
     
     displayCaseStudies(allCaseStudies);
     updateStatistics(allCaseStudies);
-    updatePortfolioOverview(allCaseStudies);
     
     showToast('Portfolio updated successfully');
     
@@ -220,7 +259,7 @@ async function loadCaseStudies() {
       <div class="text-center py-4">
         <i class="bi bi-exclamation-triangle text-warning" style="font-size: 2rem;"></i>
         <h5 class="mt-2 text-muted">Unable to Load Portfolio</h5>
-        <p class="text-muted small">Please check your Google Sheet connection</p>
+        <p class="text-muted small">Please check your connection and try again</p>
         <button class="btn btn-sm btn-outline-primary" onclick="loadCaseStudies()">Try Again</button>
       </div>
     `;
@@ -232,7 +271,7 @@ function parseCSV(csvText) {
   const lines = csvText.split('\n').filter(line => line.trim() !== '');
   const caseStudies = [];
   
-  if (lines.length <= 1) return caseStudies; // Only headers or empty
+  if (lines.length <= 1) return caseStudies;
 
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i].trim();
@@ -244,13 +283,12 @@ function parseCSV(csvText) {
       const caseStudy = {
         id: columns[0]?.trim() || `PROJ-${i}`,
         title: columns[1]?.trim() || 'Untitled Project',
-        abstract: columns[2]?.trim() || 'No description available',
+        description: columns[2]?.trim() || 'No description available',
         status: columns[3]?.trim()?.toLowerCase() || 'completed',
-        driveLink: columns[4]?.trim() || '#',
+        pdfLink: columns[4]?.trim() || '#',
         dateAdded: columns[5]?.trim() || new Date().toISOString().split('T')[0]
       };
       
-      // Validate status
       if (!['ongoing', 'review', 'completed'].includes(caseStudy.status)) {
         caseStudy.status = 'completed';
       }
@@ -297,14 +335,10 @@ function displayCaseStudies(caseStudies) {
   if (filteredStudies.length === 0) {
     const filterText = currentFilter === 'all' ? '' : ` for ${getStatusLabel(currentFilter)}`;
     container.innerHTML = `
-      <div class="text-center py-5 empty-state">
-        <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+      <div class="text-center py-5">
+        <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
         <h5 class="mt-3 text-muted">No Projects Found${filterText}</h5>
-        <p class="text-muted">${currentFilter === 'all' ? 'Add your first project to Google Sheets' : 'No projects with this status'}</p>
-        <a href="https://docs.google.com/spreadsheets/d/1lx8VbDQUmvFnSWgsKzvSV_RYv3BAJF5TJk-I-82QC3c/edit" 
-           class="btn btn-primary" target="_blank">
-          <i class="bi bi-plus-circle me-1"></i>Add Projects
-        </a>
+        <p class="text-muted">Use the form to add your first case study</p>
       </div>
     `;
     return;
@@ -318,25 +352,18 @@ function displayCaseStudies(caseStudies) {
             ${getStatusBadge(caseStudy.status)}
             <span class="text-muted small ms-2">${caseStudy.id}</span>
           </div>
-          <div class="dropdown">
-            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-              <i class="bi bi-three-dots"></i>
-            </button>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="${caseStudy.driveLink}" target="_blank"><i class="bi bi-file-pdf me-2"></i>View Report</a></li>
-              <li><a class="dropdown-item" href="https://docs.google.com/spreadsheets/d/1lx8VbDQUmvFnSWgsKzvSV_RYv3BAJF5TJk-I-82QC3c/edit" target="_blank"><i class="bi bi-pencil me-2"></i>Edit in Sheet</a></li>
-            </ul>
-          </div>
+          <small class="text-muted">${formatDate(caseStudy.dateAdded)}</small>
         </div>
         <h6 class="card-title mb-2">${caseStudy.title}</h6>
-        <p class="card-text text-muted small mb-3">${caseStudy.abstract}</p>
+        <p class="card-text text-muted small mb-3">${caseStudy.description}</p>
         <div class="d-flex justify-content-between align-items-center">
-          <small class="text-muted">${formatDate(caseStudy.dateAdded)}</small>
-          <div>
-            <a href="${caseStudy.driveLink}" class="btn btn-sm btn-outline-primary me-1" target="_blank">
-              <i class="bi bi-eye me-1"></i>View
-            </a>
-          </div>
+          <a href="${caseStudy.pdfLink}" class="btn btn-sm btn-outline-primary" target="_blank">
+            <i class="bi bi-file-pdf me-1"></i>View Report
+          </a>
+          <a href="https://docs.google.com/spreadsheets/d/1lx8VbDQUmvFnSWgsKzvSV_RYv3BAJF5TJk-I-82QC3c/edit" 
+             class="btn btn-sm btn-outline-secondary" target="_blank">
+            <i class="bi bi-pencil"></i>
+          </a>
         </div>
       </div>
     </div>
@@ -397,68 +424,6 @@ function updateStatistics(caseStudies) {
   document.getElementById('ongoingStudies').textContent = ongoing;
   document.getElementById('reviewStudies').textContent = review;
   document.getElementById('completedStudies').textContent = completed;
-}
-
-// Update portfolio overview
-function updatePortfolioOverview(caseStudies) {
-  const overviewContainer = document.getElementById('portfolioOverview');
-  
-  if (caseStudies.length === 0) {
-    overviewContainer.innerHTML = `
-      <div class="col-12 text-center py-4 empty-state">
-        <i class="bi bi-journal-text" style="font-size: 2rem;"></i>
-        <p class="mt-2 text-muted">No projects in portfolio</p>
-      </div>
-    `;
-    return;
-  }
-
-  // Get recent projects (last 3)
-  const recentProjects = [...caseStudies].slice(-3).reverse();
-  
-  const html = `
-    <div class="col-md-6">
-      <h6 class="fw-semibold mb-3">Recent Projects</h6>
-      ${recentProjects.map(project => `
-        <div class="d-flex align-items-center mb-3 p-2 bg-light rounded">
-          <div class="flex-shrink-0">
-            ${getStatusBadge(project.status)}
-          </div>
-          <div class="flex-grow-1 ms-3">
-            <div class="fw-medium small">${project.title}</div>
-            <div class="text-muted extra-small">${formatDate(project.dateAdded)}</div>
-          </div>
-        </div>
-      `).join('')}
-    </div>
-    <div class="col-md-6">
-      <h6 class="fw-semibold mb-3">Portfolio Summary</h6>
-      <div class="bg-light rounded p-3">
-        <div class="row text-center">
-          <div class="col-4">
-            <div class="h5 text-primary mb-1">${caseStudies.length}</div>
-            <div class="extra-small text-muted">Total</div>
-          </div>
-          <div class="col-4">
-            <div class="h5 text-success mb-1">${caseStudies.filter(p => p.status === 'completed').length}</div>
-            <div class="extra-small text-muted">Completed</div>
-          </div>
-          <div class="col-4">
-            <div class="h5 text-warning mb-1">${caseStudies.filter(p => p.status !== 'completed').length}</div>
-            <div class="extra-small text-muted">Active</div>
-          </div>
-        </div>
-      </div>
-      <div class="mt-3">
-        <a href="https://docs.google.com/spreadsheets/d/1lx8VbDQUmvFnSWgsKzvSV_RYv3BAJF5TJk-I-82QC3c/edit" 
-           class="btn btn-outline-primary btn-sm w-100" target="_blank">
-          <i class="bi bi-arrow-up-right me-1"></i>Manage in Google Sheets
-        </a>
-      </div>
-    </div>
-  `;
-
-  overviewContainer.innerHTML = html;
 }
 
 // Show toast notification
