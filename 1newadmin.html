@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard | Vulaegis</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <style>
+    .admin-header { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); }
+    .login-section { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+    .dashboard-section { display: none; }
+    .feature-card { transition: all 0.3s ease; border: none; border-left: 4px solid #1e3c72; }
+    .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+    .stats-card { background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .btn-admin-primary { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); border: none; }
+    .btn-admin-success { background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%); border: none; }
+    .btn-admin-warning { background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%); border: none; }
+    .btn-admin-danger { background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); border: none; }
+    .sidebar { background: #f8f9fa; min-height: calc(100vh - 76px); border-right: 1px solid #dee2e6; }
+    .sidebar .nav-link { color: #495057; border-radius: 0.375rem; margin: 0.125rem 0.5rem; }
+    .sidebar .nav-link:hover, .sidebar .nav-link.active { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; }
+    .content-section { display: none; }
+    .content-section.active { display: block; }
+    .table-actions { white-space: nowrap; }
+    .status-badge { font-size: 0.75rem; }
+    .quick-action { transition: all 0.2s ease; }
+    .quick-action:hover { transform: scale(1.05); }
+  </style>
+</head>
+<body>
+  <!-- Login Section -->
+  <section id="loginSection" class="login-section">
+    <div class="container">
+      <div class="row justify-content-center align-items-center min-vh-100">
+        <div class="col-md-6 col-lg-4">
+          <div class="card shadow-lg border-0">
+            <div class="card-body p-5">
+              <div class="text-center mb-4">
+                <div class="bg-white rounded-circle p-3 d-inline-block mb-3">
+                  <i class="bi bi-shield-check text-primary" style="font-size: 2rem;"></i>
+                </div>
+                <h2 class="fw-bold text-dark">Vulaegis Admin</h2>
+                <p class="text-muted">Secure Access Portal</p>
+              </div>
+
+              <form id="loginForm">
+                <div class="mb-3">
+                  <label class="form-label text-dark fw-semibold">Username</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0">
+                      <i class="bi bi-person text-muted"></i>
+                    </span>
+                    <input type="text" class="form-control border-start-0" id="username" placeholder="Enter username" required>
+                  </div>
+                </div>
+                
+                <div class="mb-4">
+                  <label class="form-label text-dark fw-semibold">Password</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0">
+                      <i class="bi bi-lock text-muted"></i>
+                    </span>
+                    <input type="password" class="form-control border-start-0" id="password" placeholder="Enter password" required>
+                    <button type="button" class="btn btn-outline-secondary border-start-0" onclick="togglePassword()">
+                      <i class="bi bi-eye" id="passwordToggleIcon"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-admin-primary w-100 py-2 fw-semibold" id="loginBtn">
+                  <i class="bi bi-box-arrow-in-right me-2"></i>Access Dashboard
+                </button>
+                
+                <div id="loginMessage" class="mt-3"></div>
+              </form>
+
+              <div class="text-center mt-4">
+                <small class="text-muted">
+                  <i class="bi bi-info-circle me-1"></i>
+                  Reading credentials from Google Sheets
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dashboard Section -->
+  <section id="dashboardSection" class="dashboard-section">
+    <nav class="navbar navbar-expand-lg navbar-dark admin-header sticky-top">
+      <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="#">
+          <i class="bi bi-shield-check me-2"></i>Vulaegis Admin
+        </a>
+        <div class="navbar-nav ms-auto">
+          <div class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle me-1"></i><span id="currentUsername">User</span>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#" onclick="showSection('settings')"><i class="bi bi-gear me-2"></i>Settings</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 sidebar p-0">
+          <div class="d-flex flex-column flex-shrink-0 p-3">
+            <ul class="nav nav-pills flex-column mb-auto">
+              <li class="nav-item">
+                <a href="#" class="nav-link active" onclick="showSection('dashboard')">
+                  <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showSection('blog')">
+                  <i class="bi bi-journal-text me-2"></i>Blog Management
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showSection('casestudies')">
+                  <i class="bi bi-folder2-open me-2"></i>Case Studies
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showSection('employees')">
+                  <i class="bi bi-people me-2"></i>Employees
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showSection('clients')">
+                  <i class="bi bi-building me-2"></i>Clients
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showSection('projects')">
+                  <i class="bi bi-kanban me-2"></i>Projects
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showSection('analytics')">
+                  <i class="bi bi-graph-up me-2"></i>Analytics
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showSection('settings')">
+                  <i class="bi bi-gear me-2"></i>Settings
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 p-4">
+          <!-- Dashboard Section -->
+          <div id="dashboard" class="content-section active">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h2><i class="bi bi-speedometer2 me-2"></i>Dashboard Overview</h2>
+              <div class="btn-group">
+                <button class="btn btn-outline-primary">Today</button>
+                <button class="btn btn-outline-primary">Week</button>
+                <button class="btn btn-outline-primary">Month</button>
+              </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="row mb-5">
+              <div class="col-md-3 mb-3">
+                <div class="stats-card text-center p-4">
+                  <i class="bi bi-folder2-open display-6 text-primary mb-3"></i>
+                  <div class="h3 fw-bold text-dark mb-1" id="caseStudyCount">12</div>
+                  <div class="text-muted small">Case Studies</div>
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <div class="stats-card text-center p-4">
+                  <i class="bi bi-journal-text display-6 text-success mb-3"></i>
+                  <div class="h3 fw-bold text-dark mb-1" id="blogPostCount">8</div>
+                  <div class="text-muted small">Blog Posts</div>
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <div class="stats-card text-center p-4">
+                  <i class="bi bi-people display-6 text-warning mb-3"></i>
+                  <div class="h3 fw-bold text-dark mb-1" id="userCount">156</div>
+                  <div class="text-muted small">Site Visitors</div>
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <div class="stats-card text-center p-4">
+                  <i class="bi bi-graph-up display-6 text-info mb-3"></i>
+                  <div class="h3 fw-bold text-dark mb-1" id="submissionCount">24</div>
+                  <div class="text-muted small">This Month</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Content Management Cards -->
+            <div class="row mb-4">
+              <div class="col-12">
+                <h2 class="fw-bold mb-3">Content Management</h2>
+                <p class="text-muted">Manage your website content and portfolio</p>
+              </div>
+            </div>
+
+            <div class="row g-4 mb-5">
+              <!-- Case Studies Management -->
+              <div class="col-lg-6">
+                <div class="feature-card card h-100">
+                  <div class="card-body p-4">
+                    <div class="d-flex align-items-start mb-3">
+                      <div class="bg-primary rounded-circle p-3 me-3">
+                        <i class="bi bi-folder2-open text-white"></i>
+                      </div>
+                      <div>
+                        <h4 class="fw-bold mb-1">Case Studies</h4>
+                        <p class="text-muted mb-0">Manage safety project portfolio</p>
+                      </div>
+                    </div>
+                    
+                    <div class="row g-2 mb-3">
+                      <div class="col-6">
+                        <div class="quick-action text-center p-3 bg-light rounded" onclick="openCaseStudyPage()">
+                          <i class="bi bi-plus-circle display-6 text-success mb-2"></i>
+                          <div class="fw-semibold">Add New</div>
+                          <small class="text-muted">Create case study</small>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="quick-action text-center p-3 bg-light rounded" onclick="openCaseStudyPage()">
+                          <i class="bi bi-list-check display-6 text-primary mb-2"></i>
+                          <div class="fw-semibold">Manage All</div>
+                          <small class="text-muted">View & edit portfolio</small>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                      <button class="btn btn-admin-primary" onclick="openCaseStudyPage()">
+                        <i class="bi bi-gear me-2"></i>Manage Case Studies
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Blog Management -->
+              <div class="col-lg-6">
+                <div class="feature-card card h-100">
+                  <div class="card-body p-4">
+                    <div class="d-flex align-items-start mb-3">
+                      <div class="bg-success rounded-circle p-3 me-3">
+                        <i class="bi bi-journal-text text-white"></i>
+                      </div>
+                      <div>
+                        <h4 class="fw-bold mb-1">Blog Management</h4>
+                        <p class="text-muted mb-0">Create and manage blog content</p>
+                      </div>
+                    </div>
+                    
+                    <div class="row g-2 mb-3">
+                      <div class="col-6">
+                        <div class="quick-action text-center p-3 bg-light rounded" onclick="showComingSoon()">
+                          <i class="bi bi-file-earmark-plus display-6 text-success mb-2"></i>
+                          <div class="fw-semibold">New Post</div>
+                          <small class="text-muted">Write article</small>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="quick-action text-center p-3 bg-light rounded" onclick="showComingSoon()">
+                          <i class="bi bi-collection display-6 text-primary mb-2"></i>
+                          <div class="fw-semibold">Categories</div>
+                          <small class="text-muted">Manage topics</small>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                      <button class="btn btn-admin-success" onclick="showComingSoon()">
+                        <i class="bi bi-pencil-square me-2"></i>Manage Blog
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Client Management -->
+              <div class="col-lg-6">
+                <div class="feature-card card h-100">
+                  <div class="card-body p-4">
+                    <div class="d-flex align-items-start mb-3">
+                      <div class="bg-warning rounded-circle p-3 me-3">
+                        <i class="bi bi-people text-white"></i>
+                      </div>
+                      <div>
+                        <h4 class="fw-bold mb-1">Client Management</h4>
+                        <p class="text-muted mb-0">Manage client information and projects</p>
+                      </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                      <button class="btn btn-admin-warning" onclick="showComingSoon()">
+                        <i class="bi bi-person-badge me-2"></i>Manage Clients
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Analytics & Reports -->
+              <div class="col-lg-6">
+                <div class="feature-card card h-100">
+                  <div class="card-body p-4">
+                    <div class="d-flex align-items-start mb-3">
+                      <div class="bg-info rounded-circle p-3 me-3">
+                        <i class="bi bi-graph-up text-white"></i>
+                      </div>
+                      <div>
+                        <h4 class="fw-bold mb-1">Analytics</h4>
+                        <p class="text-muted mb-0">View website performance and insights</p>
+                      </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                      <button class="btn btn-info text-white" onclick="showComingSoon()">
+                        <i class="bi bi-bar-chart me-2"></i>View Analytics
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header bg-light">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-lightning me-2"></i>Quick Actions</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="row g-3">
+                      <div class="col-md-3">
+                        <button class="btn btn-outline-primary w-100" onclick="openCaseStudyPage()">
+                          <i class="bi bi-plus-circle me-2"></i>Add Case Study
+                        </button>
+                      </div>
+                      <div class="col-md-3">
+                        <a href="https://docs.google.com/spreadsheets/d/1lx8VbDQUmvFnSWgsKzvSV_RYv3BAJF5TJk-I-82QC3c/edit" 
+                           class="btn btn-outline-success w-100" target="_blank">
+                          <i class="bi bi-google me-2"></i>View Google Sheet
+                        </a>
+                      </div>
+                      <div class="col-md-3">
+                        <a href="https://vulaegissafety.github.io/Vulaegis/" class="btn btn-outline-info w-100" target="_blank">
+                          <i class="bi bi-eye me-2"></i>View Live Site
+                        </a>
+                      </div>
+                      <div class="col-md-3">
+                        <button class="btn btn-outline-warning w-100" onclick="showComingSoon()">
+                          <i class="bi bi-download me-2"></i>Export Data
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Blog Management Section -->
+          <div id="blog" class="content-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h2><i class="bi bi-journal-text me-2"></i>Blog Management</h2>
+              <button class="btn btn-admin-primary" onclick="showComingSoon()">
+                <i class="bi bi-plus-circle me-2"></i>Add New Post
+              </button>
+            </div>
+
+            <div class="card feature-card">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Getting Started with Cybersecurity</td>
+                        <td>John Doe</td>
+                        <td>Security</td>
+                        <td><span class="badge bg-success status-badge">Published</span></td>
+                        <td>2024-01-15</td>
+                        <td class="table-actions">
+                          <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
+                          <button class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></button>
+                          <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Best Practices for Data Protection</td>
+                        <td>Jane Smith</td>
+                        <td>Compliance</td>
+                        <td><span class="badge bg-warning status-badge">Draft</span></td>
+                        <td>2024-01-14</td>
+                        <td class="table-actions">
+                          <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
+                          <button class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></button>
+                          <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Case Studies Section -->
+          <div id="casestudies" class="content-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h2><i class="bi bi-folder2-open me-2"></i>Case Study Management</h2>
+              <button class="btn btn-admin-primary" onclick="openCaseStudyPage()">
+                <i class="bi bi-plus-circle me-2"></i>Add Case Study
+              </button>
+            </div>
+
+            <div class="card feature-card">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Title</th>
+                        <th>Client</th>
+                        <th>Industry</th>
+                        <th>Status</th>
+                        <th>Completion</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Financial Sector Security Implementation</td>
+                        <td>ABC Bank</td>
+                        <td>Finance</td>
+                        <td><span class="badge bg-success status-badge">Completed</span></td>
+                        <td>2024-01-10</td>
+                        <td class="table-actions">
+                          <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
+                          <button class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></button>
+                          <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Healthcare Data Protection</td>
+                        <td>MediCare Inc</td>
+                        <td>Healthcare</td>
+                        <td><span class="badge bg-info status-badge">In Progress</span></td>
+                        <td>2024-02-28</td>
+                        <td class="table-actions">
+                          <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
+                          <button class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></button>
+                          <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Employees Section -->
+          <div id="employees" class="content-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h2><i class="bi bi-people me-2"></i>Employee Management</h2>
+              <button class="btn btn-admin-primary" onclick="showComingSoon()">
+                <i class="bi bi-person-plus me-2"></i>Add Employee
+              </button>
+            </div>
+
+            <div class="card feature-card">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Position</th>
+                        <th>Department</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <div class="d-flex align-items-center">
+                            <img src="https://via.placeholder.com/40" class="rounded-circle me-3" alt="Avatar">
+                            <div>John Doe</div>
+                          </div>
+                        </td>
+                        <td>Security Analyst</td>
+                        <td>Security</td>
+                        <td>john.doe@vulaegis.com</td>
+                        <td><span class="badge bg-success status-badge">Active</span></td>
+                        <td class="table-actions">
+                          <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
+                          <button class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></button>
+                          <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="d-flex align-items-center">
+                            <img src="https://via.placeholder.com/40" class="rounded-circle me-3" alt="Avatar">
+                            <div>Jane Smith</div>
+                          </div>
+                        </td>
+                        <td>Compliance Officer</td>
+                        <td>Legal</td>
+                        <td>jane.smith@vulaegis.com</td>
+                        <td><span class="badge bg-success status-badge">Active</span></td>
+                        <td class="table-actions">
+                          <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
+                          <button class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></button>
+                          <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Clients Section -->
+          <div id="clients" class="content-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h2><i class="bi bi-building me-2"></i>Client Management</h2>
+              <button class="btn btn-admin-primary" onclick="showComingSoon()">
+                <i class="bi bi-building-add me-2"></i>Add Client
+              </button>
+            </div>
+
+            <div class="card feature-card">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Company</th>
+                        <th>Contact Person</th>
+                        <th>Industry</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>ABC Bank</td>
+                        <td>Michael Johnson</td>
+                        <td>Finance</td>
+                        <td>m.johnson@abcbank.com</td>
+                        <td><span class="badge bg-success status-badge">Active</span></td>
+                        <td class="table-actions">
+                          <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
+                          <button class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></button>
+                          <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>MediCare Inc</td>
+                        <td>Sarah Wilson</td>
+                        <td>Healthcare</td>
+                        <td>s.wilson@medicare.com</td>
+                        <td><span class="badge bg-success status-badge">Active</span></td>
+                        <td class="table-actions">
+                          <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
+                          <button class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></button>
+                          <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Projects Section -->
+          <div id="projects" class="content-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h2><i class="bi bi-kanban me-2"></i>Project Management</h2>
+              <button class="btn btn-admin-primary" onclick="showComingSoon()">
+                <i class="bi bi-plus-circle me-2"></i>New Project
+              </button>
+            </div>
+            <div class="card feature-card">
+              <div class="card-body">
+                <p>Project management content goes here...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Analytics Section -->
+          <div id="analytics" class="content-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h2><i class="bi bi-graph-up me-2"></i>Analytics</h2>
+            </div>
+            <div class="card feature-card">
+              <div class="card-body">
+                <p>Analytics dashboard content goes here...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Settings Section -->
+          <div id="settings" class="content-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h2><i class="bi bi-gear me-2"></i>Settings</h2>
+            </div>
+            
+            <div class="row">
+              <div class="col-lg-8">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title">System Preferences</h5>
+                    <div class="mb-3">
+                      <label class="form-label">Admin Email</label>
+                      <input type="email" class="form-control" value="admin@vulaegis.com">
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Notification Preferences</label>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" checked>
+                        <label class="form-check-label">Email notifications for new submissions</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" checked>
+                        <label class="form-check-label">Weekly analytics report</label>
+                      </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="showComingSoon()">Save Settings</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Coming Soon Modal -->
+  <div class="modal fade" id="comingSoonModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Feature Coming Soon</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center py-4">
+          <i class="bi bi-tools display-1 text-warning mb-3"></i>
+          <h4>Under Development</h4>
+          <p class="text-muted">This feature is currently being developed and will be available soon.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+// Google Sheet Configuration
+const SHEET_ID = '155hfKk_RikbgGWyE-8xhmwwvKmcg9CRAOP1or5Sp3Go';
+const SHEET_NAME = 'AdminUsers';
+let currentUser = null;
+
+// Check if user is already logged in
+document.addEventListener('DOMContentLoaded', function() {
+  const savedUser = localStorage.getItem('currentUser');
+  if (savedUser) {
+    currentUser = JSON.parse(savedUser);
+    showDashboard();
+  }
+});
+
+// Login Form Handler
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  const loginBtn = document.getElementById('loginBtn');
+  const loginMessage = document.getElementById('loginMessage');
+  
+  // Show loading state
+  loginBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Authenticating...';
+  loginBtn.disabled = true;
+  loginMessage.innerHTML = '';
+  
+  try {
+    // Fetch data from Google Sheets as CSV
+    const users = await fetchSheetData();
+    
+    // Authenticate user
+    const authenticatedUser = authenticate(users, username, password);
+    
+    if (authenticatedUser) {
+      currentUser = authenticatedUser;
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      showDashboard();
+    } else {
+      showMessage('Invalid username or password', 'danger');
+    }
+  } catch (error) {
+    showMessage('Authentication failed: ' + error.message, 'danger');
+  } finally {
+    // Reset button state
+    loginBtn.innerHTML = '<i class="bi bi-box-arrow-in-right me-2"></i>Access Dashboard';
+    loginBtn.disabled = false;
+  }
+});
+
+// Fetch data from Google Sheets as CSV
+async function fetchSheetData() {
+  const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}`;
+  
+  const response = await fetch(csvUrl);
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch data from Google Sheets. Please check if the sheet is shared publicly.');
+  }
+  
+  const csvText = await response.text();
+  
+  if (!csvText || csvText.trim() === '') {
+    throw new Error('No data found in the sheet.');
+  }
+  
+  // Parse CSV data
+  const users = parseCSV(csvText);
+  
+  if (users.length === 0) {
+    throw new Error('No user data found in the sheet.');
+  }
+  
+  return users;
+}
+
+// Improved CSV parser
+function parseCSV(csvText) {
+  const lines = csvText.split('\n').filter(line => line.trim() !== '');
+  
+  if (lines.length === 0) {
+    return [];
+  }
+  
+  // Parse headers
+  const headers = parseCSVLine(lines[0]).map(header => 
+    header.toLowerCase().replace(/"/g, '').trim()
+  );
+  
+  const users = [];
+  
+  for (let i = 1; i < lines.length; i++) {
+    if (lines[i].trim() === '') continue;
+    
+    const values = parseCSVLine(lines[i]);
+    const user = {};
+    
+    headers.forEach((header, index) => {
+      user[header] = values[index] ? values[index].replace(/"/g, '').trim() : '';
+    });
+    
+    // Only add user if it has at least username and password
+   
