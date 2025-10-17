@@ -11,6 +11,8 @@
     .case-study-item:hover { background-color: #f8f9fa; }
     .loading { opacity: 0.6; pointer-events: none; }
     .status-badge { font-size: 0.8rem; padding: 0.35rem 0.75rem; }
+    .config-section { background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+    .success-alert { display: none; }
   </style>
 </head>
 <body>
@@ -31,30 +33,77 @@
 </nav>
 
 <div class="container my-5">
+  <!-- Success Alert -->
+  <div id="successAlert" class="alert alert-success success-alert alert-dismissible fade show" role="alert">
+    <span id="successMessage">Operation completed successfully!</span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+
   <div class="row">
     <div class="col-12">
       <h1 class="mb-4">Case Studies Admin Panel</h1>
-      <p class="lead">Easily add and manage your case studies using Google Sheets</p>
+      <p class="lead">Manage your case studies directly in Google Sheets</p>
     </div>
   </div>
 
-  <!-- Add New Case Study Form -->
+  <!-- Configuration Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="config-section">
+        <h5><i class="bi bi-gear-fill"></i> Google Apps Script Configuration</h5>
+        <div class="row">
+          <div class="col-md-8">
+            <label for="scriptUrl" class="form-label">Web App URL</label>
+            <input type="url" class="form-control" id="scriptUrl" 
+                   placeholder="https://script.google.com/macros/s/.../exec"
+                   value="">
+            <div class="form-text">Enter the URL from your deployed Google Apps Script web app</div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">&nbsp;</label>
+            <div class="d-grid">
+              <button type="button" class="btn btn-primary" onclick="testConnection()">
+                <span id="testConnectionText">Test Connection</span>
+                <span id="testConnectionSpinner" class="spinner-border spinner-border-sm" style="display: none;"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div id="connectionStatus" class="mt-2"></div>
+        
+        <!-- Quick Setup Guide -->
+        <div class="mt-4">
+          <h6>Quick Setup Guide:</h6>
+          <ol class="small mb-0">
+            <li>Create Google Apps Script at <a href="https://script.google.com" target="_blank">script.google.com</a></li>
+            <li>Copy the provided code and deploy as web app</li>
+            <li>Set "Execute as: Me" and "Who has access: Anyone"</li>
+            <li>Paste the web app URL above and test connection</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="row">
+    <!-- Add New Case Study Form -->
     <div class="col-lg-6">
       <div class="card shadow">
         <div class="card-header bg-primary text-white">
-          <h5 class="mb-0">Add New Case Study</h5>
+          <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Add New Case Study</h5>
         </div>
         <div class="card-body">
           <form id="caseStudyForm">
             <div class="mb-3">
               <label for="projectTitle" class="form-label">Project Title *</label>
-              <input type="text" class="form-control" id="projectTitle" required>
+              <input type="text" class="form-control" id="projectTitle" required
+                     placeholder="Enter project title">
             </div>
             
             <div class="mb-3">
               <label for="projectAbstract" class="form-label">Abstract/Description *</label>
-              <textarea class="form-control" id="projectAbstract" rows="4" required></textarea>
+              <textarea class="form-control" id="projectAbstract" rows="4" required
+                        placeholder="Describe the project, objectives, and key outcomes"></textarea>
             </div>
             
             <div class="mb-3">
@@ -71,15 +120,20 @@
               <label for="googleDriveLink" class="form-label">Google Drive PDF Link *</label>
               <input type="url" class="form-control" id="googleDriveLink" 
                      placeholder="https://drive.google.com/file/d/.../view" required>
-              <div class="form-text">Make sure your Google Drive file is shared with "Anyone with the link can view"</div>
+              <div class="form-text">
+                <small>
+                  • Make sure your PDF is shared with "Anyone with the link can view"<br>
+                  • The link should end with <code>/view</code>
+                </small>
+              </div>
             </div>
             
             <div class="d-grid gap-2">
               <button type="submit" class="btn btn-success" id="submitBtn">
-                Add Case Study to Google Sheets
+                <i class="bi bi-cloud-upload"></i> Add Case Study to Google Sheets
               </button>
               <button type="button" class="btn btn-outline-secondary" onclick="previewCaseStudy()">
-                Preview
+                <i class="bi bi-eye"></i> Preview
               </button>
             </div>
           </form>
@@ -89,18 +143,87 @@
       <!-- Instructions -->
       <div class="card shadow mt-4">
         <div class="card-header bg-light">
-          <h5 class="mb-0">How to Use</h5>
+          <h5 class="mb-0"><i class="bi bi-info-circle"></i> Setup Instructions</h5>
         </div>
         <div class="card-body">
+          <h6>Google Apps Script Setup:</h6>
           <ol class="small">
-            <li>Fill in all fields (title, abstract, status, PDF link)</li>
-            <li>Click "Preview" to see how it will look</li>
-            <li>Click "Add Case Study" to save to Google Sheets</li>
-            <li>Refresh the Case Studies page to see updates</li>
+            <li>Go to <a href="https://script.google.com" target="_blank">script.google.com</a></li>
+            <li>Create new project and paste this code:
+              <pre class="bg-dark text-light p-2 mt-2 small"><code>function doGet(e) {
+  return ContentService.createTextOutput(
+    JSON.stringify({result: 'GET not supported'})
+  ).setMimetype(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  try {
+    const sheetId = '1lx8VbDQUmvFnSWgsKzvSV_RYv3BAJF5TJk-I-82QC3c';
+    const sheetName = 'Sheet1';
+    const ss = SpreadsheetApp.openById(sheetId);
+    const sheet = ss.getSheetByName(sheetName);
+    
+    if (sheet.getLastRow() === 0) {
+      sheet.getRange(1, 1, 1, 6).setValues([
+        ['ID','Title','Abstract','Status','DriveLink','DateAdded']
+      ]);
+    }
+    
+    const data = JSON.parse(e.postData.contents);
+    const action = data.action;
+    
+    if (action === 'addCaseStudy') {
+      const lastRow = sheet.getLastRow();
+      const newRow = [
+        Utilities.getUuid(),
+        data.title,
+        data.abstract,
+        data.status,
+        data.driveLink,
+        new Date().toISOString()
+      ];
+      sheet.getRange(lastRow + 1, 1, 1, newRow.length).setValues([newRow]);
+      return ContentService.createTextOutput(
+        JSON.stringify({success: true, message: 'Case study added'})
+      ).setMimetype(ContentService.MimeType.JSON);
+    }
+    
+    if (action === 'getCaseStudies') {
+      const data = sheet.getDataRange().getValues();
+      if (data.length <= 1) {
+        return ContentService.createTextOutput(
+          JSON.stringify({success: true, data: []})
+        ).setMimetype(ContentService.MimeType.JSON);
+      }
+      const caseStudies = [];
+      for (let i = 1; i < data.length; i++) {
+        const row = data[i];
+        if (row[0]) {
+          caseStudies.push({
+            id: row[0], title: row[1], abstract: row[2],
+            status: row[3], driveLink: row[4], dateAdded: row[5]
+          });
+        }
+      }
+      return ContentService.createTextOutput(
+        JSON.stringify({success: true, data: caseStudies})
+      ).setMimetype(ContentService.MimeType.JSON);
+    }
+    
+    return ContentService.createTextOutput(
+      JSON.stringify({success: false, error: 'Unknown action'})
+    ).setMimetype(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(
+      JSON.stringify({success: false, error: error.message})
+    ).setMimetype(ContentService.MimeType.JSON);
+  }
+}</code></pre>
+            </li>
+            <li>Deploy as web app: Execute as "Me", Access "Anyone"</li>
+            <li>Copy the web app URL and paste above</li>
           </ol>
-          <div class="alert alert-info small">
-            <strong>Note:</strong> Data is stored directly in your Google Sheet. The Case Studies page automatically loads from there.
-          </div>
         </div>
       </div>
     </div>
@@ -109,27 +232,63 @@
     <div class="col-lg-6">
       <div class="card shadow">
         <div class="card-header bg-info text-white">
-          <h5 class="mb-0">Live Preview</h5>
+          <h5 class="mb-0"><i class="bi bi-eye"></i> Live Preview</h5>
         </div>
         <div class="card-body">
           <div id="previewArea" class="preview-card p-3 text-center text-muted">
-            Your case study preview will appear here
+            <i class="bi bi-card-text" style="font-size: 2rem;"></i>
+            <p class="mt-2 mb-0">Your case study preview will appear here</p>
+            <small class="text-muted">Fill out the form and click "Preview"</small>
           </div>
         </div>
       </div>
 
-      <!-- Google Sheets Status -->
+      <!-- Quick Actions -->
       <div class="card shadow mt-4">
         <div class="card-header bg-success text-white">
-          <h5 class="mb-0">Google Sheets Status</h5>
+          <h5 class="mb-0"><i class="bi bi-lightning"></i> Quick Actions</h5>
         </div>
         <div class="card-body">
-          <div id="sheetStatus" class="text-center">
-            <p>✅ Connected to Google Sheets</p>
-            <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vQZEZswOKOUaXz2UzyJE2bKtavohwpqUbqaaXGa-YmDQAN79tgrA34d-MtxTT-JKNsVe28cJ1BQCfNY/pubhtml" 
-               class="btn btn-sm btn-outline-primary" target="_blank">
-              View Google Sheet
+          <div class="d-grid gap-2">
+            <button class="btn btn-outline-primary" onclick="loadCaseStudies()" id="refreshBtn">
+              <i class="bi bi-arrow-clockwise"></i> Refresh Case Studies List
+            </button>
+            <a href="https://docs.google.com/spreadsheets/d/1lx8VbDQUmvFnSWgsKzvSV_RYv3BAJF5TJk-I-82QC3c/edit" 
+               class="btn btn-outline-secondary" target="_blank" id="sheetLink">
+              <i class="bi bi-google"></i> Open Google Sheet
             </a>
+            <a href="https://script.google.com/home" 
+               class="btn btn-outline-secondary" target="_blank">
+              <i class="bi bi-code-slash"></i> Open Google Apps Script
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Connection Status -->
+      <div class="card shadow mt-4">
+        <div class="card-header bg-warning">
+          <h5 class="mb-0"><i class="bi bi-wifi"></i> Connection Status</h5>
+        </div>
+        <div class="card-body">
+          <div id="statusInfo">
+            <div class="row text-center">
+              <div class="col-4">
+                <div class="h4 mb-1" id="totalStudies">0</div>
+                <small class="text-muted">Total Studies</small>
+              </div>
+              <div class="col-4">
+                <div class="h4 mb-1" id="ongoingStudies">0</div>
+                <small class="text-muted">Ongoing</small>
+              </div>
+              <div class="col-4">
+                <div class="h4 mb-1" id="completedStudies">0</div>
+                <small class="text-muted">Completed</small>
+              </div>
+            </div>
+            <div class="mt-3">
+              <small class="text-muted" id="lastUpdated">Last updated: Never</small>
+            </div>
           </div>
         </div>
       </div>
@@ -142,19 +301,20 @@
       <div class="card shadow">
         <div class="card-header bg-warning">
           <div class="d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Existing Case Studies</h5>
-            <button class="btn btn-sm btn-outline-primary" onclick="loadCaseStudies()">
-              Refresh List
-            </button>
+            <h5 class="mb-0"><i class="bi bi-folder2-open"></i> Existing Case Studies</h5>
+            <div>
+              <span class="badge bg-primary me-2" id="studiesCount">0 studies</span>
+              <button class="btn btn-sm btn-outline-primary" onclick="loadCaseStudies()" id="refreshListBtn">
+                <i class="bi bi-arrow-clockwise"></i> Refresh
+              </button>
+            </div>
           </div>
         </div>
         <div class="card-body">
           <div id="existingStudies" class="row g-3">
-            <div class="col-12 text-center">
-              <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-              </div>
-              <p class="mt-2">Loading case studies from Google Sheets...</p>
+            <div class="col-12 text-center py-4">
+              <i class="bi bi-cloud-download" style="font-size: 2rem;"></i>
+              <p class="mt-2 text-muted">Configure the Web App URL above to load case studies</p>
             </div>
           </div>
         </div>
@@ -163,14 +323,37 @@
   </div>
 </div>
 
-<script>
-// Your Google Sheets URL (CSV format)
-const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZEZswOKOUaXz2UzyJE2bKtavohwpqUbqaaXGa-YmDQAN79tgrA34d-MtxTT-JKNsVe28cJ1BQCfNY/pub?output=csv';
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
-// Load existing case studies when page loads
+<script>
+// Google Apps Script Web App URL
+let SCRIPT_URL = '';
+
+// Load configuration when page loads
 document.addEventListener('DOMContentLoaded', function() {
-  loadCaseStudies();
+  // Load saved script URL
+  const savedUrl = localStorage.getItem('vulaegisScriptUrl');
+  if (savedUrl) {
+    document.getElementById('scriptUrl').value = savedUrl;
+    SCRIPT_URL = savedUrl;
+    updateSheetLink();
+    loadCaseStudies();
+  }
 });
+
+// Save script URL when changed
+document.getElementById('scriptUrl').addEventListener('change', function() {
+  SCRIPT_URL = this.value;
+  localStorage.setItem('vulaegisScriptUrl', SCRIPT_URL);
+  updateSheetLink();
+});
+
+function updateSheetLink() {
+  // Your Google Sheet is already set
+  const sheetLink = document.getElementById('sheetLink');
+  sheetLink.href = 'https://docs.google.com/spreadsheets/d/1lx8VbDQUmvFnSWgsKzvSV_RYv3BAJF5TJk-I-82QC3c/edit';
+}
 
 // Function to preview case study
 function previewCaseStudy() {
@@ -211,53 +394,91 @@ function getStatusBadge(status) {
 }
 
 // Function to handle form submission
-document.getElementById('caseStudyForm').addEventListener('submit', function(e) {
+document.getElementById('caseStudyForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   
+  if (!SCRIPT_URL) {
+    alert('Please configure the Web App URL first');
+    return;
+  }
+
   const submitBtn = document.getElementById('submitBtn');
   const originalText = submitBtn.innerHTML;
   
   // Disable button and show loading
-  submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...';
+  submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding to Google Sheets...';
   submitBtn.disabled = true;
 
   const caseStudy = {
+    action: 'addCaseStudy',
     title: document.getElementById('projectTitle').value,
     abstract: document.getElementById('projectAbstract').value,
     status: document.getElementById('projectStatus').value,
-    driveLink: document.getElementById('googleDriveLink').value,
-    dateAdded: new Date().toISOString().split('T')[0] // YYYY-MM-DD format
+    driveLink: document.getElementById('googleDriveLink').value
   };
 
-  // For now, we'll store in localStorage since we can't write to Google Sheets via frontend
-  // In a real implementation, you'd use Google Apps Script or a backend
-  saveToLocalStorage(caseStudy);
-  
-  // Re-enable button
-  submitBtn.innerHTML = originalText;
-  submitBtn.disabled = false;
+  try {
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(caseStudy)
+    });
 
-  // Reset form
-  document.getElementById('caseStudyForm').reset();
-  document.getElementById('previewArea').innerHTML = '<div class="text-center text-muted">Your case study preview will appear here</div>';
-  
-  alert('Case study added to local storage! Refresh the Case Studies page to see it.');
-  loadCaseStudies();
+    const result = await response.json();
+    
+    if (result.success) {
+      // Reset form
+      document.getElementById('caseStudyForm').reset();
+      document.getElementById('previewArea').innerHTML = `
+        <div class="text-center text-muted">
+          <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
+          <p class="mt-2 mb-0">Case study added successfully!</p>
+          <small>Fill out the form to add another case study</small>
+        </div>
+      `;
+      
+      // Reload case studies
+      await loadCaseStudies();
+      
+      // Show success message
+      showSuccess('Case study added successfully to Google Sheets!');
+    } else {
+      throw new Error(result.error || 'Failed to add case study');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error adding case study: ' + error.message);
+  } finally {
+    // Re-enable button
+    submitBtn.innerHTML = originalText;
+    submitBtn.disabled = false;
+  }
 });
 
-// Function to save to localStorage (temporary solution)
-function saveToLocalStorage(caseStudy) {
-  let caseStudies = JSON.parse(localStorage.getItem('vulaegisCaseStudies') || '[]');
-  caseStudy.id = Date.now(); // Add unique ID
-  caseStudies.push(caseStudy);
-  localStorage.setItem('vulaegisCaseStudies', JSON.stringify(caseStudies));
-}
-
-// Function to load case studies from Google Sheets
+// Function to load case studies from Google Sheets via Apps Script
 async function loadCaseStudies() {
+  if (!SCRIPT_URL) {
+    document.getElementById('existingStudies').innerHTML = `
+      <div class="col-12 text-center py-4">
+        <i class="bi bi-exclamation-triangle" style="font-size: 2rem;"></i>
+        <p class="mt-2 text-muted">Please configure the Web App URL above to load case studies</p>
+      </div>
+    `;
+    return;
+  }
+
   const container = document.getElementById('existingStudies');
+  const refreshBtn = document.getElementById('refreshListBtn');
+  const originalText = refreshBtn.innerHTML;
+  
+  // Show loading state
+  refreshBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Loading...';
+  refreshBtn.disabled = true;
+  
   container.innerHTML = `
-    <div class="col-12 text-center">
+    <div class="col-12 text-center py-4">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
@@ -266,109 +487,73 @@ async function loadCaseStudies() {
   `;
 
   try {
-    // Try to load from Google Sheets first
-    const response = await fetch(SHEET_URL);
-    const csvText = await response.text();
-    const caseStudies = parseCSV(csvText);
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({action: 'getCaseStudies'})
+    });
+
+    const result = await response.json();
     
-    if (caseStudies.length > 0) {
-      displayCaseStudies(caseStudies, 'Google Sheets');
+    if (result.success) {
+      displayCaseStudies(result.data);
+      updateStatistics(result.data);
+      document.getElementById('studiesCount').textContent = `${result.data.length} studies`;
+      document.getElementById('lastUpdated').textContent = `Last updated: ${new Date().toLocaleString()}`;
     } else {
-      // Fallback to localStorage
-      const localCaseStudies = JSON.parse(localStorage.getItem('vulaegisCaseStudies') || '[]');
-      if (localCaseStudies.length > 0) {
-        displayCaseStudies(localCaseStudies, 'Local Storage');
-      } else {
-        container.innerHTML = `
-          <div class="col-12 text-center py-4">
-            <h5>No case studies found</h5>
-            <p class="text-muted">Add your first case study using the form above</p>
-          </div>
-        `;
-      }
+      throw new Error(result.error || 'Failed to load case studies');
     }
   } catch (error) {
-    console.error('Error loading from Google Sheets:', error);
-    // Fallback to localStorage
-    const localCaseStudies = JSON.parse(localStorage.getItem('vulaegisCaseStudies') || '[]');
-    if (localCaseStudies.length > 0) {
-      displayCaseStudies(localCaseStudies, 'Local Storage (Fallback)');
-    } else {
-      container.innerHTML = `
-        <div class="col-12 text-center py-4">
-          <h5>Unable to load case studies</h5>
-          <p class="text-muted">Please check your connection and try again</p>
-          <button class="btn btn-primary btn-sm" onclick="loadCaseStudies()">Retry</button>
-        </div>
-      `;
-    }
+    console.error('Error loading case studies:', error);
+    container.innerHTML = `
+      <div class="col-12 text-center py-4">
+        <i class="bi bi-exclamation-triangle text-danger" style="font-size: 2rem;"></i>
+        <h5 class="mt-2">Error loading case studies</h5>
+        <p class="text-muted">${error.message}</p>
+        <button class="btn btn-primary btn-sm" onclick="loadCaseStudies()">Retry</button>
+      </div>
+    `;
+  } finally {
+    // Restore button state
+    refreshBtn.innerHTML = originalText;
+    refreshBtn.disabled = false;
   }
-}
-
-// Function to parse CSV data
-function parseCSV(csvText) {
-  const lines = csvText.split('\n');
-  const caseStudies = [];
-  
-  // Skip header row and start from index 1
-  for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (!line) continue;
-    
-    // Simple CSV parsing (for more complex CSV, use a library)
-    const columns = line.split(',').map(col => col.trim().replace(/^"|"$/g, ''));
-    
-    if (columns.length >= 5) {
-      caseStudies.push({
-        id: columns[0] || i,
-        title: columns[1],
-        abstract: columns[2],
-        status: columns[3],
-        driveLink: columns[4],
-        dateAdded: columns[5] || 'Unknown'
-      });
-    }
-  }
-  
-  return caseStudies;
 }
 
 // Function to display case studies
-function displayCaseStudies(caseStudies, source) {
+function displayCaseStudies(caseStudies) {
   const container = document.getElementById('existingStudies');
   
   if (caseStudies.length === 0) {
     container.innerHTML = `
       <div class="col-12 text-center py-4">
-        <h5>No case studies found</h5>
+        <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+        <h5 class="mt-2">No case studies found</h5>
         <p class="text-muted">Add your first case study using the form above</p>
       </div>
     `;
     return;
   }
 
-  container.innerHTML = `
-    <div class="col-12">
-      <div class="alert alert-info small">
-        Showing ${caseStudies.length} case studies from: ${source}
-      </div>
-    </div>
-  ` + caseStudies.map(caseStudy => `
+  container.innerHTML = caseStudies.map(caseStudy => `
     <div class="col-md-6 col-lg-4">
       <div class="case-study-item card h-100 border-0 shadow-sm">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-start mb-2">
             ${getStatusBadge(caseStudy.status)}
-            <button class="btn btn-sm btn-outline-danger" onclick="deleteCaseStudy(${caseStudy.id})" 
-                    ${source.includes('Google Sheets') ? 'disabled title="Delete from Google Sheets directly"' : ''}>
-              Delete
+            <button class="btn btn-sm btn-outline-danger" onclick="deleteCaseStudy('${caseStudy.id}')" title="Delete case study">
+              <i class="bi bi-trash"></i>
             </button>
           </div>
           <h6 class="card-title">${caseStudy.title}</h6>
-          <p class="card-text small">${caseStudy.abstract.substring(0, 100)}${caseStudy.abstract.length > 100 ? '...' : ''}</p>
-          <div class="d-flex justify-content-between align-items-center">
-            <small class="text-muted">Added: ${caseStudy.dateAdded}</small>
-            <a href="${caseStudy.driveLink}" class="btn btn-primary btn-sm" target="_blank">View PDF</a>
+          <p class="card-text small">${caseStudy.abstract.substring(0, 120)}${caseStudy.abstract.length > 120 ? '...' : ''}</p>
+          <div class="d-flex justify-content-between align-items-center mt-auto">
+            <small class="text-muted">${caseStudy.dateAdded ? new Date(caseStudy.dateAdded).toLocaleDateString() : 'Unknown date'}</small>
+            <a href="${caseStudy.driveLink}" class="btn btn-primary btn-sm" target="_blank" title="View PDF">
+              <i class="bi bi-file-pdf"></i> PDF
+            </a>
           </div>
         </div>
       </div>
@@ -376,16 +561,115 @@ function displayCaseStudies(caseStudies, source) {
   `).join('');
 }
 
-// Function to delete case study (local storage only)
-function deleteCaseStudy(id) {
-  if (confirm('Are you sure you want to delete this case study?')) {
-    let caseStudies = JSON.parse(localStorage.getItem('vulaegisCaseStudies') || '[]');
-    caseStudies = caseStudies.filter(cs => cs.id !== id);
-    localStorage.setItem('vulaegisCaseStudies', JSON.stringify(caseStudies));
-    loadCaseStudies();
+// Function to update statistics
+function updateStatistics(caseStudies) {
+  const total = caseStudies.length;
+  const ongoing = caseStudies.filter(cs => cs.status === 'ongoing').length;
+  const completed = caseStudies.filter(cs => cs.status === 'completed').length;
+  const review = caseStudies.filter(cs => cs.status === 'review').length;
+  
+  document.getElementById('totalStudies').textContent = total;
+  document.getElementById('ongoingStudies').textContent = ongoing;
+  document.getElementById('completedStudies').textContent = completed;
+}
+
+// Function to delete case study
+async function deleteCaseStudy(id) {
+  if (!confirm('Are you sure you want to delete this case study? This action cannot be undone.')) {
+    return;
+  }
+
+  if (!SCRIPT_URL) {
+    alert('Web App URL not configured');
+    return;
+  }
+
+  try {
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({action: 'deleteCaseStudy', id: id})
+    });
+
+    const result = await response.json();
+    
+    if (result.success) {
+      await loadCaseStudies();
+      showSuccess('Case study deleted successfully!');
+    } else {
+      throw new Error(result.error || 'Failed to delete case study');
+    }
+  } catch (error) {
+    console.error('Error deleting case study:', error);
+    alert('Error deleting case study: ' + error.message);
   }
 }
+
+// Function to test connection
+async function testConnection() {
+  if (!SCRIPT_URL) {
+    alert('Please enter the Web App URL first');
+    return;
+  }
+
+  const statusDiv = document.getElementById('connectionStatus');
+  const testBtn = document.getElementById('testConnectionText');
+  const spinner = document.getElementById('testConnectionSpinner');
+  
+  testBtn.style.display = 'none';
+  spinner.style.display = 'inline-block';
+  statusDiv.innerHTML = '<div class="text-info"><i class="bi bi-hourglass-split"></i> Testing connection...</div>';
+
+  try {
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({action: 'getCaseStudies'})
+    });
+
+    const result = await response.json();
+    
+    if (result.success) {
+      statusDiv.innerHTML = `<span class="text-success"><i class="bi bi-check-circle"></i> Connection successful! Found ${result.data.length} case studies.</span>`;
+      loadCaseStudies();
+    } else {
+      throw new Error(result.error || 'Connection failed');
+    }
+  } catch (error) {
+    statusDiv.innerHTML = `<span class="text-danger"><i class="bi bi-x-circle"></i> Connection failed: ${error.message}</span>`;
+  } finally {
+    testBtn.style.display = 'inline';
+    spinner.style.display = 'none';
+  }
+}
+
+// Function to show success message
+function showSuccess(message) {
+  const alert = document.getElementById('successAlert');
+  const messageSpan = document.getElementById('successMessage');
+  
+  messageSpan.textContent = message;
+  alert.style.display = 'block';
+  
+  // Auto-hide after 5 seconds
+  setTimeout(() => {
+    alert.style.display = 'none';
+  }, 5000);
+}
+
+// Initialize tooltips
+document.addEventListener('DOMContentLoaded', function() {
+  const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+  tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+  });
+});
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
