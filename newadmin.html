@@ -67,7 +67,7 @@
               <div class="text-center mt-4">
                 <small class="text-muted">
                   <i class="bi bi-info-circle me-1"></i>
-                  Credentials managed via Google Sheets
+                  Reading credentials from Google Sheets
                 </small>
               </div>
             </div>
@@ -164,7 +164,7 @@
 <script>
 // Google Sheet Configuration
 const SHEET_ID = '155hfKk_RikbgGWyE-8xhmwwvKmcg9CRAOP1or5Sp3Go';
-const SHEET_NAME = 'Sheet1';
+const SHEET_NAME = 'AdminUsers';
 let currentUser = null;
 
 // Check if user is already logged in
@@ -194,6 +194,9 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     // Fetch data from Google Sheets as CSV
     const users = await fetchSheetData();
     
+    // Debug: Log the fetched users to console
+    console.log('Fetched users:', users);
+    
     // Authenticate user
     const authenticatedUser = authenticate(users, username, password);
     
@@ -206,7 +209,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     }
   } catch (error) {
     console.error('Authentication error:', error);
-    showMessage('Authentication failed. Please check your credentials.', 'danger');
+    showMessage('Authentication failed: ' + error.message, 'danger');
   } finally {
     // Reset button state
     loginBtn.innerHTML = '<i class="bi bi-box-arrow-in-right me-2"></i>Access Dashboard';
@@ -216,32 +219,49 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
 
 // Fetch data from Google Sheets as CSV
 async function fetchSheetData() {
-  // Convert Google Sheet to CSV URL
-  const csvUrl = `https://docs.google.com/spreadsheets/d/155hfKk_RikbgGWyE-8xhmwwvKmcg9CRAOP1or5Sp3Go/gviz/tq?tqx=out:csv&sheet='AdminUsers'`;
+  // Use the exact CSV URL you provided
+  const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}`;
+  
+  console.log('Fetching from URL:', csvUrl);
   
   const response = await fetch(csvUrl);
   
   if (!response.ok) {
-    throw new Error('Failed to fetch data from Google Sheets');
+    throw new Error(`Failed to fetch data from Google Sheets: ${response.status} ${response.statusText}`);
   }
   
   const csvText = await response.text();
   
-  if (!csvText) {
-    throw new Error('No data found in the sheet');
+  if (!csvText || csvText.trim() === '') {
+    throw new Error('No data found in the sheet. Please check if the sheet exists and has data.');
   }
+  
+  console.log('Raw CSV data:', csvText);
   
   // Parse CSV data
   const users = parseCSV(csvText);
+  
+  if (users.length === 0) {
+    throw new Error('No user data found in the sheet.');
+  }
+  
   return users;
 }
 
-// Simple CSV parser
+// Improved CSV parser
 function parseCSV(csvText) {
-  const lines = csvText.split('\n');
-  const headers = lines[0].split(',').map(header => 
+  const lines = csvText.split('\n').filter(line => line.trim() !== '');
+  
+  if (lines.length === 0) {
+    return [];
+  }
+  
+  // Parse headers
+  const headers = parseCSVLine(lines[0]).map(header => 
     header.toLowerCase().replace(/"/g, '').trim()
   );
+  
+  console.log('CSV Headers:', headers);
   
   const users = [];
   
@@ -255,9 +275,13 @@ function parseCSV(csvText) {
       user[header] = values[index] ? values[index].replace(/"/g, '').trim() : '';
     });
     
-    users.push(user);
+    // Only add user if it has at least username and password
+    if (user.username || user.email || user.user) {
+      users.push(user);
+    }
   }
   
+  console.log('Parsed users:', users);
   return users;
 }
 
@@ -291,6 +315,8 @@ function authenticate(users, username, password) {
     const userUsername = user.username || user.email || user.user || user.name;
     // Try different possible password fields
     const userPassword = user.password || user.pass || user.pwd;
+    
+    console.log(`Checking: ${userUsername} vs ${username}, ${userPassword} vs ${password}`);
     
     return userUsername === username && userPassword === password;
   });
