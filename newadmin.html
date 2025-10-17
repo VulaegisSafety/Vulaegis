@@ -194,9 +194,6 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     // Fetch data from Google Sheets as CSV
     const users = await fetchSheetData();
     
-    // Debug: Log the fetched users to console
-    console.log('Fetched users:', users);
-    
     // Authenticate user
     const authenticatedUser = authenticate(users, username, password);
     
@@ -208,7 +205,6 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
       showMessage('Invalid username or password', 'danger');
     }
   } catch (error) {
-    console.error('Authentication error:', error);
     showMessage('Authentication failed: ' + error.message, 'danger');
   } finally {
     // Reset button state
@@ -219,24 +215,19 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
 
 // Fetch data from Google Sheets as CSV
 async function fetchSheetData() {
-  // Use the exact CSV URL you provided
   const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}`;
-  
-  console.log('Fetching from URL:', csvUrl);
   
   const response = await fetch(csvUrl);
   
   if (!response.ok) {
-    throw new Error(`Failed to fetch data from Google Sheets: ${response.status} ${response.statusText}`);
+    throw new Error('Failed to fetch data from Google Sheets. Please check if the sheet is shared publicly.');
   }
   
   const csvText = await response.text();
   
   if (!csvText || csvText.trim() === '') {
-    throw new Error('No data found in the sheet. Please check if the sheet exists and has data.');
+    throw new Error('No data found in the sheet.');
   }
-  
-  console.log('Raw CSV data:', csvText);
   
   // Parse CSV data
   const users = parseCSV(csvText);
@@ -261,8 +252,6 @@ function parseCSV(csvText) {
     header.toLowerCase().replace(/"/g, '').trim()
   );
   
-  console.log('CSV Headers:', headers);
-  
   const users = [];
   
   for (let i = 1; i < lines.length; i++) {
@@ -281,7 +270,6 @@ function parseCSV(csvText) {
     }
   }
   
-  console.log('Parsed users:', users);
   return users;
 }
 
@@ -315,8 +303,6 @@ function authenticate(users, username, password) {
     const userUsername = user.username || user.email || user.user || user.name;
     // Try different possible password fields
     const userPassword = user.password || user.pass || user.pwd;
-    
-    console.log(`Checking: ${userUsername} vs ${username}, ${userPassword} vs ${password}`);
     
     return userUsername === username && userPassword === password;
   });
@@ -406,7 +392,7 @@ function updateDashboardStats() {
 
 // Show section function
 function showSection(sectionName) {
-  console.log('Showing section:', sectionName);
+  // Implementation for showing different sections
 }
 </script>
 
